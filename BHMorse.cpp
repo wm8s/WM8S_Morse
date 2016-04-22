@@ -1167,6 +1167,7 @@ void BHMorse::sendMessage(const char* pMessage)
 void BHMorse::sendNextElem()
 {
 	// send the next element to be sent
+	// [this requires the bit after the last used bit to still be 0]
 
 	if (bitRead(_tempChar.elements, (BHMORSE_CHAR_ELEMENT_MAP_HIELEMENTBIT - _numElemsInCharSent)))
 	{
@@ -1219,12 +1220,14 @@ void BHMorse::sendNextElem()
 					break;
 
 				case SendMessage:
-					// nothing to do next; go idle
+					// wait a little
+					waitInterCharSpace();
+					// go idle
 					setRunMode(Idle);
 					break;
 
 				case SendChars:
-					// wait:
+					// wait a little
 					waitInterCharSpace();
 					// load next character
 					loadNextChar();

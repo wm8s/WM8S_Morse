@@ -20,7 +20,7 @@
 
 #define BHMORSE_EEPROM_SIGNATURE_V1 0x5AFE
 
-// EEPROM memory map:
+// EEPROM memory map
 
 #define BHMORSE_EEPROM_ADDR_SIGNATURE							0
 #define BHMORSE_EEPROM_ADDR_OVERALLSPEED					(BHMORSE_EEPROM_ADDR_SIGNATURE + sizeof(BHMorse_EEPROMSignature))
@@ -32,7 +32,7 @@
 
 #define BHMORSE_EEPROM_WRITE_DELAY 50
 
-// for random tables:
+// for random tables
 
 #define BHMORSE_FIRSTNAME_MAXLEN 10
 #define BHMORSE_FIRSTNAME_NUMROW 155
@@ -120,7 +120,7 @@
 #define BHMORSE_MESSAGE_MAXLEN 250
 #define BHMORSE_MESSAGE_BUFRSIZE (BHMORSE_MESSAGE_MAXLEN + 1)
 
-// enums:
+// enums
 
 enum BHMorse_QSOPart_Row
 {
@@ -140,7 +140,7 @@ enum BHMorse_QSOPart_Row
 	K2
 };
 
-// typedefs:
+// typedefs
 
 typedef	unsigned long BHMorse_EEPROMSignature;
 typedef	unsigned long BHMorse_WpmFactor;
@@ -166,13 +166,13 @@ typedef struct
 	char d[BHMORSE_QSOPART_MAXLEN];
 } BHMorse_QSOPart;
 
-// classes:
+// classes
 
 class BHMorse
 {
 public:
 
-	// a character map element:
+	// a character map element
 
 	struct charElement
 	{
@@ -181,7 +181,7 @@ public:
 		BHMorse_charElemMap_Elements elements;
 	};
 	
-	// run modes:
+	// run modes
 
 	enum RunMode
 	{
@@ -197,7 +197,7 @@ private:
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// Stuff available for random senders:
+	// Stuff available for random senders
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -207,12 +207,12 @@ private:
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// Properties:
+	// Properties
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
 	//------------------------------------------------------------
-	// Morse parameters:
+	// Morse parameters
 	//------------------------------------------------------------
 
 	// WPM calculation scheme factor, in (ms * words) / (dit * minute)
@@ -227,12 +227,12 @@ private:
 
 	BHMorse_Wpm _userCharSpeed;
 
-	// highest enabled character group for random sending:
+	// highest enabled character group for random sending
 
 	BHMorse_charElemMap_Group _highestEnabledGroup;
 
 	//------------------------------------------------------------
-	// sound parameters:
+	// sound parameters
 	//------------------------------------------------------------
 
 	// tone() pin number
@@ -244,7 +244,7 @@ private:
 	BHMorse_Hz _pitch;
 
 	//------------------------------------------------------------
-	// message parameters:
+	// message parameters
 	//------------------------------------------------------------
 
 	// the message to send
@@ -252,26 +252,26 @@ private:
 	char _message[BHMORSE_MESSAGE_BUFRSIZE];
 
 	//------------------------------------------------------------
-	// run mode:
+	// run mode
 	//------------------------------------------------------------
 
 	RunMode _runMode;
 
 	//------------------------------------------------------------
-	// internal stuff:
+	// internal stuff
 	//------------------------------------------------------------
 
-	// internal buffer for building a message:
+	// internal buffer for building a message
 
 	char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 
-	// map of characters within current group range:
+	// map of characters within current group range
 
 	static const charElement _charElemMap[BHMORSE_CHAR_ELEMENT_MAP_LENGTH];
 	byte _ptrsToCharsInGroupRange[BHMORSE_CHAR_ELEMENT_MAP_LENGTH];
 	byte _numCharGroupPtrs;
 	
-	// copy of the character currently being sent (elements get shifted)
+	// copy of the character currently being sent
 
 	charElement _tempChar;
 
@@ -285,11 +285,11 @@ private:
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// Procedures:
+	// Procedures
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
-	// other:
+	// other
 
 	void loadSettings();
 	BHMorse_EEPROMSignature readSignature();
@@ -319,35 +319,35 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// Properties:
+	// Properties
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
-	// Procedures:
+	// Procedures
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
 	//------------------------------------------------------------
-	// constructors:
+	// constructors
 	//------------------------------------------------------------
 
 	BHMorse();
 
 	//------------------------------------------------------------
-	// Morse parameter getters:
+	// Morse parameter getters
 	//------------------------------------------------------------
 
-	// backed:
+	// backed
 
 	BHMorse_WpmFactor wpmSchemeFactor();
 	BHMorse_Wpm overallSpeed();
 	BHMorse_Wpm userCharSpeed();
 	BHMorse_charElemMap_Group highestEnabledGroup();
 
-	// computed:
+	// computed
 
 	BHMorse_Wpm charSpeed();
 	BHMorse_Duration charDitMarkTime();
@@ -358,7 +358,7 @@ public:
 	BHMorse_Duration interWordSpaceTime();
 
 	//------------------------------------------------------------
-	// Morse parameter setters:
+	// Morse parameter setters
 	//------------------------------------------------------------
 
 	void setWpmSchemeFactor(BHMorse_WpmFactor newValue);
@@ -367,45 +367,45 @@ public:
 	void setHighestEnabledGroup(BHMorse_charElemMap_Group newValue);
 
 	//------------------------------------------------------------
-	// sound parameter getters:
+	// sound parameter getters
 	//------------------------------------------------------------
 
 	int tonePin();
 	BHMorse_Hz pitch();
 
 	//------------------------------------------------------------
-	// sound parameter setters:
+	// sound parameter setters
 	//------------------------------------------------------------
 
 	void setTonePin(int newValue);
 	void setPitch(BHMorse_Hz newValue, bool pSave);
 
 	//------------------------------------------------------------
-	// message parameter getters:
+	// message parameter getters
 	//------------------------------------------------------------
 
 	void message(char* retV);
 
 	//------------------------------------------------------------
-	// message parameter setters:
+	// message parameter setters
 	//------------------------------------------------------------
 
 	void setMessage(char const* newValue);
 
 	//------------------------------------------------------------
-	// other getters:
+	// other getters
 	//------------------------------------------------------------
 
 	RunMode	runMode();
 
 	//------------------------------------------------------------
-	// other setters:
+	// other setters
 	//------------------------------------------------------------
 
 	void setRunMode(RunMode newValue);
 
 	//------------------------------------------------------------
-	// misc. methods:
+	// misc. methods
 	//------------------------------------------------------------
 
 	void begin(int tonePin);
