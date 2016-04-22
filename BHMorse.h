@@ -217,19 +217,19 @@ private:
 
 	// WPM calculation scheme factor, in (ms * words) / (dit * minute)
 
-	BHMorse_WpmFactor _wpmSchemeFactor;											// persist
+	BHMorse_WpmFactor _wpmSchemeFactor;
 
 	// overall speed; "s" in ARRL calculations
 
-	BHMorse_Wpm _overallSpeed;															// persist
+	BHMorse_Wpm _overallSpeed;
 
 	// user-selected character speed
 
-	BHMorse_Wpm _userCharSpeed;															// persist
+	BHMorse_Wpm _userCharSpeed;
 
 	// highest enabled character group for random sending:
 
-	BHMorse_charElemMap_Group _highestEnabledGroup;					// persist
+	BHMorse_charElemMap_Group _highestEnabledGroup;
 
 	//------------------------------------------------------------
 	// sound parameters:
@@ -237,11 +237,11 @@ private:
 
 	// tone() pin number
 
-	int _tonePin;																						// fixed by hardware design
+	int _tonePin;
 
 	// tone pitch
 
-	BHMorse_Hz _pitch;																			// persist
+	BHMorse_Hz _pitch;
 
 	//------------------------------------------------------------
 	// message parameters:
@@ -255,7 +255,7 @@ private:
 	// run mode:
 	//------------------------------------------------------------
 
-	RunMode _runMode;																				// persist
+	RunMode _runMode;
 
 	//------------------------------------------------------------
 	// internal stuff:
@@ -273,15 +273,15 @@ private:
 	
 	// copy of the character currently being sent (elements get shifted)
 
-	charElement _tempChar;																	// scratch
+	charElement _tempChar;
 
 	// the number of elements within the current character already sent
 
-	int _numElemsInCharSent;																// scratch
+	int _numElemsInCharSent;
 
 	// the number of characters within the message already sent
 
-	int _numCharsInMsgSent;																	// scratch
+	int _numCharsInMsgSent;
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
