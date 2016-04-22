@@ -1,1 +1,3 @@
 # BHMorse
+
+Morse Code generator.
