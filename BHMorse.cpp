@@ -13,10 +13,10 @@
 #include "BHMorse.h"
 
 //////////////////////////////////////////////////////////////////////////////
-// Stuff available for random senders:
+// Stuff available for random senders
 //////////////////////////////////////////////////////////////////////////////
 
-// names:
+// names
 
 const BHMorse_FirstName BHMorse::_firstNames[BHMORSE_FIRSTNAME_NUMROW] PROGMEM =
 {
@@ -347,7 +347,7 @@ const BHMorse_City BHMorse::_cities[BHMORSE_CITY_NUMROW] PROGMEM =
 	{ "ZHENGZHOU CHINA" }
 };
 
-// QSO parts:
+// QSO parts
 
 const BHMorse_QSOPart BHMorse::_QSOParts[BHMORSE_QSOPART_NUMROW] PROGMEM =
 {
@@ -367,12 +367,12 @@ const BHMorse_QSOPart BHMorse::_QSOParts[BHMORSE_QSOPART_NUMROW] PROGMEM =
 	{" ("}								// K2 {KN}
 };
 
-// temporary buffer for building messages:
+// temporary buffer for building messages
 
 char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 
 //////////////////////////////////////////////////////////////////////////////
-// Character map:
+// Character map
 //////////////////////////////////////////////////////////////////////////////
 
 const BHMorse::charElement BHMorse::_charElemMap[BHMORSE_CHAR_ELEMENT_MAP_LENGTH] PROGMEM =
@@ -447,7 +447,7 @@ const BHMorse::charElement BHMorse::_charElemMap[BHMORSE_CHAR_ELEMENT_MAP_LENGTH
 
 void BHMorse::getRandomName(char* retV)
 {
-	// return a random name from the table in PROGMEM:
+	// return a random name from the table in PROGMEM
 
 	int r = random(0, BHMORSE_FIRSTNAME_NUMROW);
 
@@ -458,7 +458,7 @@ void BHMorse::getRandomName(char* retV)
 
 void BHMorse::getRandomCity(char* retV)
 {
-	// return a random city from the table in PROGMEM:
+	// return a random city from the table in PROGMEM
 
 	int r = random(0, BHMORSE_CITY_NUMROW);
 
@@ -469,7 +469,7 @@ void BHMorse::getRandomCity(char* retV)
 
 void BHMorse::getRandomCall(char* retV)
 {
-	// return a random callsign:
+	// return a random callsign
 	//
 	// 1-2 letters
 	// 1 number
@@ -480,11 +480,11 @@ void BHMorse::getRandomCall(char* retV)
 	byte p;
 	byte l;
 
-	// empty:
+	// empty
 
 	strcpy(retV, "");
 
-	// prefix:
+	// prefix
 
 	///TODO: only use legal IARU prefixes
 
@@ -497,14 +497,14 @@ void BHMorse::getRandomCall(char* retV)
 		retV[l + 1] = '\0';
 	}
 
-	// number:
+	// number
 
 	p = random('0', '9' + 1);
 	l = strlen(retV);
 	retV[l] = p;
 	retV[l + 1] = '\0';
 
-	// suffix:
+	// suffix
 
 	n = random(4 - strlen(retV), 4);	// if "A1" so far, force suffix to >= 2 chars
 	for (byte i = 0; i < n; i++)
@@ -518,7 +518,7 @@ void BHMorse::getRandomCall(char* retV)
 
 void BHMorse::getRandomRST(char* retV)
 {
-	// random RST:
+	// random RST
 	//
 	// [3-5]
 	// [4-9]
@@ -533,7 +533,7 @@ void BHMorse::getRandomRST(char* retV)
 
 BHMorse::charElement BHMorse::getCharElement(int p)
 {
-	// read a character from PROGMEM:
+	// read a character from PROGMEM
 
 	charElement retV;
 	memcpy_P(&retV, &_charElemMap[p], sizeof(charElement));
@@ -542,7 +542,7 @@ BHMorse::charElement BHMorse::getCharElement(int p)
 
 void BHMorse::getQSOPart(char* retV, int p)
 {
-	// read a QSO part from PROGMEM:
+	// read a QSO part from PROGMEM
 
 	BHMorse_QSOPart b;
 	memcpy_P(&b, &_QSOParts[p], sizeof(BHMorse_QSOPart));
@@ -551,7 +551,7 @@ void BHMorse::getQSOPart(char* retV, int p)
 
 void BHMorse::redoCharGroupPtrs()
 {
-	// populate the character group pointer table:
+	// populate the character group pointer table
 
 	_numCharGroupPtrs = 0;
 
@@ -568,7 +568,7 @@ void BHMorse::redoCharGroupPtrs()
 
 boolean BHMorse::isSpace(charElement pChar)
 {
-	// returns true if the passed character is a space:
+	// returns true if the passed character is a space
 
 	return (pChar.charGroup == BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE);
 }
@@ -578,7 +578,7 @@ void BHMorse::loadChar()
 	_tempChar = BHMORSE_CHAR_ELEMENT_MAP_UNUSED;
 	_numElemsInCharSent = 0;
 
-	// load a copy of the next character to be sent:
+	// load a copy of the next character to be sent
 
 	if (strlen(_message) > 0)
 	{
@@ -597,7 +597,7 @@ void BHMorse::loadChar()
 
 void BHMorse::loadNextChar()
 {
-	// load next random character to send with group <= highestEnabledGroup:
+	// load next random character to send with group <= highestEnabledGroup
 
 	int rndChar = random(0, _numCharGroupPtrs);
 	_tmpBuffer[0] = _ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
@@ -607,7 +607,7 @@ void BHMorse::loadNextChar()
 
 void BHMorse::loadNextGroup()
 {
-	// load next group of random characters with group <= highestEnabledGroup:
+	// load next group of random characters with group <= highestEnabledGroup
 
 	byte rndNumChars = random(BHMORSE_RANDOMGROUP_MIN, BHMORSE_RANDOMGROUP_MAX + 1);
 	byte rndChar;
@@ -624,14 +624,14 @@ void BHMorse::loadNextGroup()
 
 void BHMorse::loadNextQSO()
 {
-	// load next random QSO:
+	// load next random QSO
 
 	char bufr[BHMORSE_CITY_MAXLEN];		// buffer large enough to hold largest part
 	byte p;
 
 	strcpy(_tmpBuffer, "");
 
-	// get calls:
+	// get calls
 
 	char callA[10];
 	getRandomCall(callA);
@@ -639,7 +639,7 @@ void BHMorse::loadNextQSO()
 	char callB[10];
 	getRandomCall(callB);
 
-	// calla DE callb:
+	// calla DE callb
 
 	strcpy(_tmpBuffer, callA);
 
@@ -648,13 +648,13 @@ void BHMorse::loadNextQSO()
 
 	strcat(_tmpBuffer, callB);
 
-	// FB:
+	// FB
 
 	p = random(BHMorse_QSOPart_Row::FB1, BHMorse_QSOPart_Row::FB3 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
-	// RST:
+	// RST
 
 	p = random(BHMorse_QSOPart_Row::RST1, BHMorse_QSOPart_Row::RST2 + 1);
 	getQSOPart(bufr, p);
@@ -663,7 +663,7 @@ void BHMorse::loadNextQSO()
 	getRandomRST(bufr);
 	strcat(_tmpBuffer, bufr);
 
-	// Name:
+	// Name
 
 	p = random(BHMorse_QSOPart_Row::Name1, BHMorse_QSOPart_Row::Name2 + 1);
 	getQSOPart(bufr, p);
@@ -672,7 +672,7 @@ void BHMorse::loadNextQSO()
 	getRandomName(bufr);
 	strcat(_tmpBuffer, bufr);
 
-	// QTH:
+	// QTH
 
 	p = random(BHMorse_QSOPart_Row::QTH1, BHMorse_QSOPart_Row::QTH2 + 1);
 	getQSOPart(bufr, p);
@@ -681,13 +681,13 @@ void BHMorse::loadNextQSO()
 	getRandomCity(bufr);
 	strcat(_tmpBuffer, bufr);
 
-	// Back to you:
+	// Back to you
 
 	p = random(BHMorse_QSOPart_Row::Bk2U1, BHMorse_QSOPart_Row::Bk2U2 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
-	// calla DE callb:
+	// calla DE callb
 
 	strcat(_tmpBuffer, callA);
 
@@ -702,31 +702,31 @@ void BHMorse::loadNextQSO()
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
-	// send it:
+	// send it
 
 	setMessage(_tmpBuffer);
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// constructors:
+// constructors
 //////////////////////////////////////////////////////////////////////////////
 
 BHMorse::BHMorse()
 {
-	// constructor:
-	// put stuff you don't want to do until main.setup() in begin():
+	// constructor
+	// put stuff you don't want to do until main.setup() in begin()
 
-	// stop running:
+	// stop running
 
 	_runMode = Idle;
 
-	// reset some things:
+	// reset some things
 
 	_numCharGroupPtrs = 0;	// just in case
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Morse parameter getters for backed properties:
+// Morse parameter getters for backed properties
 //////////////////////////////////////////////////////////////////////////////
 
 BHMorse_WpmFactor BHMorse::wpmSchemeFactor()
@@ -750,7 +750,7 @@ BHMorse_charElemMap_Group BHMorse::highestEnabledGroup()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Morse parameter getters for computed properties:
+// Morse parameter getters for computed properties
 //////////////////////////////////////////////////////////////////////////////
 
 BHMorse_Wpm BHMorse::charSpeed()
@@ -806,7 +806,7 @@ BHMorse_Duration BHMorse::charDahMarkTime()
 BHMorse_Duration BHMorse::farnsworthDelayTime()
 {
 	// the Farnsworth delay factor;
-	// this is t(a) in ARRL calculations:
+	// this is t(a) in ARRL calculations
 
 	double numerator = ((60.0 * charSpeed()) - (37.2 * overallSpeed())) * 1000;
 	double denominator = (charSpeed() * overallSpeed());
@@ -818,7 +818,7 @@ BHMorse_Duration BHMorse::farnsworthDelayTime()
 BHMorse_Duration BHMorse::interCharSpaceTime()
 {
 	// the time between characters;
-	// this is t(c) in ARRL calculations:
+	// this is t(c) in ARRL calculations
 
 	return ((BHMORSE_DITS_PER_DAH * farnsworthDelayTime()) / 19);
 }
@@ -826,13 +826,13 @@ BHMorse_Duration BHMorse::interCharSpaceTime()
 BHMorse_Duration BHMorse::interWordSpaceTime()
 {
 	// the time between words:
-	// this is t(w) in ARRL calculations:
+	// this is t(w) in ARRL calculations
 
 	return ((BHMORSE_DITS_PER_CHARSPACE * farnsworthDelayTime()) / 19);
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Morse parameter setters:
+// Morse parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::setWpmSchemeFactor(BHMorse_WpmFactor newValue)
@@ -875,7 +875,7 @@ void BHMorse::setHighestEnabledGroup(BHMorse_charElemMap_Group newValue)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// sound parameter getters:
+// sound parameter getters
 //////////////////////////////////////////////////////////////////////////////
 
 int BHMorse::tonePin()
@@ -889,7 +889,7 @@ BHMorse_Hz BHMorse::pitch()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// sound parameter setters:
+// sound parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::setTonePin(int newValue)
@@ -910,7 +910,7 @@ void BHMorse::setPitch(BHMorse_Hz newValue, bool pSave)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// message parameter getters:
+// message parameter getters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::message(char* retV)
@@ -919,7 +919,7 @@ void BHMorse::message(char* retV)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// message paremeter setters:
+// message paremeter setters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::setMessage(char const* newValue)
@@ -935,7 +935,7 @@ void BHMorse::setMessage(char const* newValue)
 
 	strcpy(_message, newValue);
 
-	// load 1st character:
+	// load 1st character
 
 	_numCharsInMsgSent = 0;
 	
@@ -943,7 +943,7 @@ void BHMorse::setMessage(char const* newValue)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// other getters:
+// other getters
 //////////////////////////////////////////////////////////////////////////////
 
 BHMorse::RunMode BHMorse::runMode()
@@ -952,7 +952,7 @@ BHMorse::RunMode BHMorse::runMode()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// other setters:
+// other setters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::setRunMode(BHMorse::RunMode newValue)
@@ -961,7 +961,7 @@ void BHMorse::setRunMode(BHMorse::RunMode newValue)
 
 	setMessage("");
 
-	// if it's one of the random run modes, prime the first message:
+	// if it's one of the random run modes, prime the first message
 
 	switch (runMode())
 	{
@@ -986,12 +986,12 @@ void BHMorse::setRunMode(BHMorse::RunMode newValue)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// EEPROM settings stuff:
+// EEPROM settings stuff
 //////////////////////////////////////////////////////////////////////////////
 
 BHMorse_EEPROMSignature BHMorse::readSignature()
 {
-	// read signature:
+	// read signature
 
 	BHMorse_EEPROMSignature es = 0;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_SIGNATURE, es);
@@ -1001,7 +1001,7 @@ BHMorse_EEPROMSignature BHMorse::readSignature()
 
 void BHMorse::readOverallSpeed()
 {
-	// read signature:
+	// read signature
 
 	BHMorse_Wpm tmpWpm;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_OVERALLSPEED, tmpWpm);
@@ -1010,7 +1010,7 @@ void BHMorse::readOverallSpeed()
 
 void BHMorse::readUserCharSpeed()
 {
-	// save user character speed:
+	// save user character speed
 
 	BHMorse_Wpm tmpWpm;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_USERCHARSPEED, tmpWpm);
@@ -1019,7 +1019,7 @@ void BHMorse::readUserCharSpeed()
 
 void BHMorse::readHighestEnabledGroup()
 {
-	// save highest enabled group:
+	// save highest enabled group
 
 	BHMorse_charElemMap_Group tmpGroup;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP, tmpGroup);
@@ -1028,7 +1028,7 @@ void BHMorse::readHighestEnabledGroup()
 
 void BHMorse::readPitch()
 {
-	// save pitch:
+	// save pitch
 
 	BHMorse_Hz tmpHz;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_PITCH, tmpHz);
@@ -1037,11 +1037,11 @@ void BHMorse::readPitch()
 
 void BHMorse::loadSettings()
 {
-	// read persistent settings to EEPROM:
+	// read persistent settings to EEPROM
 
 	if (readSignature() == BHMORSE_EEPROM_SIGNATURE_V1)
 	{
-		// get settings from EEPROM:
+		// get settings from EEPROM
 
 		readOverallSpeed();
 		readUserCharSpeed();
@@ -1050,7 +1050,7 @@ void BHMorse::loadSettings()
 	}
 	else
 	{
-		// new defaults:
+		// new defaults
 
 		resetSettings();
 	}
@@ -1058,7 +1058,7 @@ void BHMorse::loadSettings()
 
 void BHMorse::resetSettings()
 {
-	// reset settings to factor defaults:
+	// reset settings to factor defaults
 
 	saveSignature();
 	setOverallSpeed(BHMORSE_DEFAULT_OVERALLSPEED);
@@ -1069,8 +1069,6 @@ void BHMorse::resetSettings()
 
 void BHMorse::saveSignature()
 {
-	// save signature:
-
 	BHMorse_EEPROMSignature es = BHMORSE_EEPROM_SIGNATURE_V1;
 	EEPROM.put(BHMORSE_EEPROM_ADDR_SIGNATURE, es);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
@@ -1078,71 +1076,63 @@ void BHMorse::saveSignature()
 
 void BHMorse::saveOverallSpeed()
 {
-	// save signature:
-
 	EEPROM.put(BHMORSE_EEPROM_ADDR_OVERALLSPEED, _overallSpeed);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
 void BHMorse::saveUserCharSpeed()
 {
-	// save signature:
-
 	EEPROM.put(BHMORSE_EEPROM_ADDR_USERCHARSPEED, _userCharSpeed);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
 void BHMorse::saveHighestEnabledGroup()
 {
-	// save signature:
-
 	EEPROM.put(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP, _highestEnabledGroup);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
 void BHMorse::savePitch()
 {
-	// save signature:
-
 	EEPROM.put(BHMORSE_EEPROM_ADDR_PITCH, _pitch);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// other methods:
+// other methods
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::begin(int tonePin)
 {
-	// do stuff that you can't or don't want to do in the constructor:
+	// do stuff that you can't or don't want to do in the constructor
 
-	// seed the "random" # generator:
+	// seed the "random" # generator
 
 	randomSeed(analogRead(BHMORSE_UNUSED_ANALOGPIN));
 
-	// load settings from EEPROM:
+	// load settings from EEPROM
 
 	loadSettings();
 
-	// set WPM Factor:
+	// set WPM Factor
 
 	setWpmSchemeFactor(BHMORSE_WPMSCHEMEFACTOR_PARIS);
 
-	// install parameters:
+	// install parameters
 
 	setTonePin(tonePin);
 }
 
 boolean BHMorse::elemsRemainInChar()
 {
-	// returns true if any elements remain to be sent in the current character:
+	// returns true if any elements remain to be sent in the current character
 
 	return (_numElemsInCharSent < _tempChar.numElems);
 }
 
 boolean BHMorse::charsRemainInMsg()
 {
-	// returns true if any characters remain to be send in the message:
+	// returns true if any characters remain to be send in the message
 
 	return (_numCharsInMsgSent < strlen(_message));
 }
@@ -1150,14 +1140,14 @@ boolean BHMorse::charsRemainInMsg()
 boolean BHMorse::msgDone()
 {
 	// returns true if any elements remain to be sent in the current character,
-	// or any characters remain to be send in the message:
+	// or any characters remain to be send in the message
 
 	return (!elemsRemainInChar() && !charsRemainInMsg());
 }
 
 void BHMorse::sendUntilMsgDone()
 {
-	// send elements until the message is done:
+	// send elements until the message is done
 
 	while (!msgDone())
 	{
@@ -1167,7 +1157,7 @@ void BHMorse::sendUntilMsgDone()
 
 void BHMorse::sendMessage(const char* pMessage)
 {
-  // send a message and wait for it to finish:
+  // send a message and wait for it to finish
 
   setRunMode(SendMessage);
   setMessage(pMessage);
@@ -1176,7 +1166,7 @@ void BHMorse::sendMessage(const char* pMessage)
 
 void BHMorse::sendNextElem()
 {
-	// send the next element to be sent:
+	// send the next element to be sent
 
 	if (bitRead(_tempChar.elements, (BHMORSE_CHAR_ELEMENT_MAP_HIELEMENTBIT - _numElemsInCharSent)))
 	{
@@ -1191,21 +1181,21 @@ void BHMorse::sendNextElem()
 		sendSpace();
 	}
 
-	// bump element counter:
+	// bump element counter
 
 	_numElemsInCharSent++;
 
 	if (!elemsRemainInChar())
 	{
-		// character's finished:
+		// character's finished
 
-		// bump character counter:
+		// bump character counter
 
 		_numCharsInMsgSent++;
 
 		if (charsRemainInMsg())
 		{
-			// get next character:
+			// get next character
 
 			loadChar();
 
@@ -1220,7 +1210,7 @@ void BHMorse::sendNextElem()
 		else
 		{
 			// message is finished;
-			// see if I need to load the next message:
+			// see if I need to load the next message
 
 			switch (runMode())
 			{
@@ -1229,21 +1219,21 @@ void BHMorse::sendNextElem()
 					break;
 
 				case SendMessage:
-					// nothing to do next; go idle:
+					// nothing to do next; go idle
 					setRunMode(Idle);
 					break;
 
 				case SendChars:
 					// wait:
 					waitInterCharSpace();
-					// load next character:
+					// load next character
 					loadNextChar();
 					break;
 
 				case SendGroups:
 					// wait
 					waitInterWordSpace();
-					// load next group:
+					// load next group
 					loadNextGroup();
 					break;
 
@@ -1251,12 +1241,12 @@ void BHMorse::sendNextElem()
 					// wait
 					waitInterWordSpace();
 					waitInterWordSpace();
-					// load next QSO:
+					// load next QSO
 					loadNextQSO();
 					break;
 
 				case SendFile:
-					// nothing to do next; go idle:
+					// nothing to do next; go idle
 					setRunMode(Idle);
 
 				default:
@@ -1270,7 +1260,7 @@ void BHMorse::sendNextElem()
 
 void BHMorse::sendMark(bool pStopAfter)
 {
-	// send a mark:
+	// send an element of mark
 
 	tone(tonePin(), pitch());
 	delay(charDitMarkTime());
@@ -1279,7 +1269,7 @@ void BHMorse::sendMark(bool pStopAfter)
 
 void BHMorse::sendSpace()
 {
-	// send an element of space:
+	// send an element of space
 
 	noTone(tonePin());
 	waitInterElemSpace();
@@ -1317,21 +1307,21 @@ void BHMorse::beepLo()
 
 void BHMorse::waitInterElemSpace()
 {
-	// wait the time between elements:
+	// wait the time between elements
 
 	delay(charDitSpaceTime());
 }
 
 void BHMorse::waitInterCharSpace()
 {
-	// wait the time between characters;
+	// wait the time between characters
 
 	delay(interCharSpaceTime());
 }
 
 void BHMorse::waitInterWordSpace()
 {
-	// wait the time between words;
+	// wait the time between words
 
 	delay(interWordSpaceTime());
 }
