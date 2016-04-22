@@ -8,6 +8,6 @@ The code is fairly easy to follow, so I won't include documentation, until the c
 
 Each turn of the loop() sends one element (a dit-long character mark or space, or an inter-character space).
 
-See the BH_1CPO project on GitHub for a sketch that uses BHMorse to implement a full-featured CW trainer.
+See the BH_1CPO project on GitHub at https://github.com/wm8s/1CPO for a sketch that uses BHMorse to implement a full-featured CW trainer.
 
 Also see the 1CPO project at https://hackaday.io/project/11212-1cpo for a hardware implementation that fits in an Altoids Smalls tin.
