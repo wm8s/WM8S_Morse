@@ -736,6 +736,8 @@ BHMorse_WpmFactor BHMorse::wpmSchemeFactor()
 
 BHMorse_Wpm BHMorse::overallSpeed()
 {
+	// this is "s" in the ARRL calculations
+
 	return _overallSpeed;
 }
 
