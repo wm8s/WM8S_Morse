@@ -20,12 +20,12 @@ The ARRL uses the more-or-less standard word PARIS, with 31 units of element mar
 
 In order to see if PARIS and its 50 total elements still represented a decent "word" for words-per-minute calculations of a common amateur radio QSO, I took:
 
-* 1,000 of the most common English words
-* the words making up the names of the 100 largest cities in the world
-* the numbers 1 through 30
+* 1,000 of the most common English words,
+* the words making up the names of the 100 largest cities in the world,
+* the numbers 1 through 30,
 * eight of what I considered common power levels (5W, 10W, 25W, 50W, 100W, 200W, 500W, and 1KW),
 * the most common Morse prosigns,
-* the 200 highest scoring callsigns from the 2014 IARU HF contest results,
+* the 200 highest scoring callsigns from the 2014 IARU HF contest results, and
 * what I think are the 25 most common Q-signals, and 150 common Morse abbreviations (like PSE, UR, ES, etc.),
 
 and I determined that the mean number of elements per word is 49.489. So as it turns out, in that regard, at least, PARIS is still a pretty good word for our purposes.
