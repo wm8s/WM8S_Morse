@@ -4,7 +4,8 @@
 //
 //	Created 2016-04-01 by Rob Bailey, WM8S
 //
-//
+//	Send Morse Code, including generating random characters, groups of
+//	characters, or plausible QSOs.
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -18,32 +19,47 @@
 
 // names
 
-const BHMorse_FirstName BHMorse::_firstNames[BHMORSE_FIRSTNAME_NUMROW] PROGMEM =
+const BHMorse_FirstName BHMorse::_firstNames[] PROGMEM =
 {
 	{ "AARAV" },
+	{ "ADI" },
 	{ "AGUSTIN" },
 	{ "AI" },
 	{ "ALEX" },
 	{ "ALEXANDER" },
 	{ "AMANDA" },
+	{ "AMIT" },
 	{ "AMY" },
 	{ "ANDREAS" },
 	{ "ANDREI" },
 	{ "ANDY" },
+	{ "ANGEL" },
 	{ "ANGELA" },
 	{ "ANNA" },
+	{ "ANSON" },
 	{ "ANTONIO" },
+	{ "ARATA" },
+	{ "ARIEL" },
 	{ "ARON" },
+	{ "ASAHI" },
+	{ "ASHER" },
 	{ "ASHLEY" },
+	{ "ATTICUS" },
+	{ "AVA" },
 	{ "AYA" },
 	{ "AZIZ" },
+	{ "BARB" },
 	{ "BARBARA" },
+	{ "BARBIE" },
 	{ "BEN" },
 	{ "BETTY" },
 	{ "BILL" },
+	{ "BOB" },
+	{ "BOBBIE" },
 	{ "BRANDON" },
 	{ "BRENDA" },
 	{ "BRIAN" },
+	{ "BRUNO" },
 	{ "CAROL" },
 	{ "CAROLYN" },
 	{ "CATHY" },
@@ -52,42 +68,70 @@ const BHMorse_FirstName BHMorse::_firstNames[BHMORSE_FIRSTNAME_NUMROW] PROGMEM =
 	{ "CHRISTINE" },
 	{ "CYNTHIA" },
 	{ "DANIEL" },
+	{ "DAVE" },
 	{ "DAVID" },
+	{ "DAVIT" },
 	{ "DEBORAH" },
 	{ "DEBRA" },
+	{ "DECLAN" },
 	{ "DENNIS" },
+	{ "DEREK" },
+	{ "DIANE" },
+	{ "DICK" },
 	{ "DIEGO" },
 	{ "DONALD" },
 	{ "DONNA" },
 	{ "DOROTHY" },
 	{ "ED" },
+	{ "ELEANOR" },
 	{ "ELIAS" },
 	{ "EMILY" },
 	{ "ERIC" },
+	{ "EZRA" },
+	{ "FAITH" },
+	{ "FENG" },
 	{ "FILIP" },
 	{ "FRANCESCO" },
+	{ "FRANCISCO" },
 	{ "FRANK" },
 	{ "FREJA" },
 	{ "GARY" },
 	{ "GEORGE" },
 	{ "GEORGI" },
+	{ "GOR" },
+	{ "GRACE" },
 	{ "GREG" },
+	{ "HANK" },
 	{ "HANS" },
 	{ "HAO" },
+	{ "HARUKI" },
+	{ "HARUTA" },
 	{ "HEATHER" },
 	{ "HELEN" },
+	{ "HINATA" },
 	{ "HIROTO" },
 	{ "HUGO" },
+	{ "IAN" },
+	{ "ICHIKA" },
 	{ "IOANNIS" },
+	{ "ITSUKI" },
 	{ "JACK" },
+	{ "JACKSON" },
 	{ "JACOB" },
+	{ "JAKOB" },
+	{ "JAMES" },
+	{ "JAN" },
+	{ "JANE" },
 	{ "JANET" },
 	{ "JASON" },
+	{ "JASPER" },
+	{ "JAVIER" },
 	{ "JAYDEN" },
 	{ "JEFF" },
 	{ "JENNIFER" },
 	{ "JERRY" },
 	{ "JESSICA" },
+	{ "JIAN" },
 	{ "JIE" },
 	{ "JIM" },
 	{ "JOAO" },
@@ -95,8 +139,10 @@ const BHMorse_FirstName BHMorse::_firstNames[BHMORSE_FIRSTNAME_NUMROW] PROGMEM =
 	{ "JOHN" },
 	{ "JONAS" },
 	{ "JOSE" },
+	{ "JOSEPH" },
 	{ "JOSHUA" },
 	{ "JUAN" },
+	{ "JUN" },
 	{ "JUSTIN" },
 	{ "KAREN" },
 	{ "KEN" },
@@ -104,90 +150,152 @@ const BHMorse_FirstName BHMorse::_firstNames[BHMORSE_FIRSTNAME_NUMROW] PROGMEM =
 	{ "KIM" },
 	{ "LARA" },
 	{ "LARRY" },
+	{ "LARS" },
 	{ "LAURA" },
+	{ "LEXI" },
+	{ "LIAM" },
 	{ "LINDA" },
+	{ "LINDSEY" },
 	{ "LISA" },
 	{ "LIZ" },
 	{ "LUCIA" },
 	{ "LUIS" },
+	{ "LUKAS" },
 	{ "MAIA" },
 	{ "MALIK" },
+	{ "MARC" },
 	{ "MARGARET" },
 	{ "MARIA" },
 	{ "MARK" },
 	{ "MARY" },
 	{ "MASON" },
+	{ "MATEO" },
+	{ "MATHIS" },
+	{ "MATIAS" },
 	{ "MATT" },
 	{ "MAXIM" },
 	{ "MAYA" },
 	{ "MEHMET" },
+	{ "MICHAEL" },
 	{ "MICHELLE" },
 	{ "MIGUEL" },
 	{ "MIKE" },
+	{ "MILO" },
 	{ "MIN JOON" },
+	{ "MINATO" },
 	{ "MISSY" },
+	{ "MOSHE" },
 	{ "NANCY" },
+	{ "NAREK" },
 	{ "NICK" },
 	{ "NICOLAS" },
 	{ "NICOLE" },
+	{ "NOA" },
+	{ "NOAH" },
 	{ "NOAM" },
+	{ "OLIVER" },
+	{ "OLIVIA" },
 	{ "OMAR" },
+	{ "ONNI" },
 	{ "PABLO" },
 	{ "PAMELA" },
+	{ "PAT" },
 	{ "PATRICK" },
+	{ "PATTIE" },
+	{ "PATTY" },
 	{ "PAUL" },
 	{ "PEDRO" },
+	{ "PENELOPE" },
 	{ "QIAN" },
 	{ "RACHEL" },
 	{ "RAYMOND" },
 	{ "REBECCA" },
+	{ "REN" },
 	{ "RENZ" },
 	{ "RICH" },
+	{ "RICHARD" },
+	{ "RICHIE" },
+	{ "RICK" },
 	{ "RIKO" },
 	{ "ROB" },
+	{ "ROD" },
+	{ "RODNEY" },
+	{ "RODRIGO" },
 	{ "RON" },
 	{ "RUTH" },
 	{ "RYAN" },
 	{ "SAKURA" },
 	{ "SAM" },
+	{ "SAMUEL" },
 	{ "SANDY" },
 	{ "SANTIAGO" },
 	{ "SARAH" },
 	{ "SCOTT" },
 	{ "SEBASTIAN" },
+	{ "SHANE" },
 	{ "SHARON" },
+	{ "SHIRA" },
 	{ "SHIRLEY" },
 	{ "SHU" },
 	{ "SOMCHAI" },
 	{ "SOMSAK" },
 	{ "SOPHIA" },
+	{ "SOU" },
+	{ "SOUTA" },
 	{ "STEPH" },
 	{ "STEPHEN" },
 	{ "STEVE" },
 	{ "SUE" },
+	{ "TALIA" },
 	{ "TAMAR" },
+	{ "TATSUKI" },
+	{ "THOMAS" },
+	{ "TIBERIUS" },
 	{ "TIM" },
+	{ "TODD" },
 	{ "TOM" },
 	{ "TOMAS" },
+	{ "TOMMY" },
+	{ "TOMOHARU" },
 	{ "TONY" },
+	{ "TSURUKI" },
 	{ "VIRGINIA" },
 	{ "WEI" },
+	{ "WILL" },
+	{ "WILLIAM" },
+	{ "WOUT" },
 	{ "XIAN" },
+	{ "YAEL" },
+	{ "YI" },
+	{ "YONG" },
 	{ "YUSUF" },
+	{ "YUUMA" },
 	{ "YUVAL" }
 };
 
 // cities
 
-const BHMorse_City BHMorse::_cities[BHMORSE_CITY_NUMROW] PROGMEM =
+const BHMorse_City BHMorse::_cities[] PROGMEM =
 {
+	{ "ABILENE TX" },
 	{ "AHMEDABAD INDIA" },
+	{ "AKRON OH" },
 	{ "ALBUQUERQUE NM" },
+	{ "ALEXANDRIA VA" },
+	{ "ALLENTOWN PA" },
+	{ "AMARILLO TX" },
 	{ "ANAHEIM CA" },
 	{ "ANCHORAGE AK" },
 	{ "ANKARA TURKEY" },
+	{ "ANN ARBOR MI" },
+	{ "ANTIOCH CA" },
+	{ "ARLINGTON TX" },
+	{ "ARVADA CO" },
+	{ "ATHENS GA" },
 	{ "ATLANTA GA" },
+	{ "AUGUSTA GA" },
 	{ "AURORA CO" },
+	{ "AURORA IL" },
 	{ "AUSTIN TX" },
 	{ "BAKERSFIELD CA" },
 	{ "BALTIMORE MD" },
@@ -195,174 +303,371 @@ const BHMorse_City BHMorse::_cities[BHMORSE_CITY_NUMROW] PROGMEM =
 	{ "BANGKOK THAILAND" },
 	{ "BARCELONA SPAIN" },
 	{ "BATON ROUGE LA" },
+	{ "BEAUMONT TX" },
 	{ "BEIJING CHINA" },
+	{ "BELLEVUE WA" },
 	{ "BELO HORIZONTE BR" },
+	{ "BERKELEY CA" },
 	{ "BERLIN GERMANY" },
+	{ "BILLINGS MT" },
 	{ "BIRMINGHAM AL" },
 	{ "BOGOTA COLOMBIA" },
 	{ "BOISE ID" },
 	{ "BOSTON MA" },
+	{ "BOULDER CO" },
+	{ "BRIDGEPORT CT" },
+	{ "BROKEN ARROW OK" },
+	{ "BROWNSVILLE TX" },
 	{ "BUFFALO NY" },
+	{ "BURBANK CA" },
+	{ "CAMBRIDGE MA" },
+	{ "CAPE CORAL FL" },
+	{ "CARLSBAD CA" },
+	{ "CARROLLTON TX" },
+	{ "CARY NC" },
+	{ "CEDAR RAPIDS IA" },
+	{ "CENTENNIAL CO" },
 	{ "CHANDLER AZ" },
+	{ "CHARLESTON SC" },
 	{ "CHARLESTON WV" },
 	{ "CHARLOTTE NC" },
+	{ "CHATTANOOGA TN" },
 	{ "CHENGDU CHINA" },
 	{ "CHENNAI INDIA" },
+	{ "CHESAPEAKE VA" },
 	{ "CHEYENNE WY" },
 	{ "CHICAGO IL" },
 	{ "CHONGQING CHINA" },
 	{ "CHULA VISTA CA" },
 	{ "CINCINNATI OH" },
+	{ "CLARKSVILLE TN" },
+	{ "CLEARWATER FL" },
 	{ "CLEVELAND OH" },
+	{ "CLOVIS CA" },
+	{ "COLLEGE STATION TX" },
 	{ "COLORADO SPRINGS CO" },
+	{ "COLUMBIA MO" },
+	{ "COLUMBIA SC" },
+	{ "COLUMBUS GA" },
 	{ "COLUMBUS OH" },
+	{ "CONCORD CA" },
+	{ "CORAL SPRINGS FL" },
+	{ "CORONA CA" },
 	{ "CORPUS CHRISTI TX" },
+	{ "COSTA MESA CA" },
 	{ "DALLAS TX" },
+	{ "DALY CITY CA" },
+	{ "DAVENPORT IA" },
+	{ "DAYTON OH" },
+	{ "DENTON TX" },
 	{ "DENVER CO" },
+	{ "DES MOINES IA" },
 	{ "DETROIT MI" },
 	{ "DHAKA BANGLADESH" },
+	{ "DOWNEY CA" },
 	{ "DURHAM NC" },
+	{ "EDISON NJ" },
+	{ "EL CAJON CA" },
+	{ "EL MONTE CA" },
 	{ "EL PASO TX" },
+	{ "ELGIN IL" },
+	{ "ELIZABETH NJ" },
+	{ "ELK GROVE CA" },
+	{ "ESCONDIDO CA" },
+	{ "EUGENE OR" },
+	{ "EVANSVILLE IN" },
+	{ "EVERETT WA" },
+	{ "FAIRFIELD CA" },
+	{ "FARGO ND" },
+	{ "FAYETTEVILLE NC" },
+	{ "FONTANA CA" },
+	{ "FORT COLLINS CO" },
+	{ "FORT LAUDERDALE FL" },
 	{ "FORT WAYNE IN" },
 	{ "FORT WORTH TX" },
 	{ "FREMONT CA" },
 	{ "FRESNO CA" },
 	{ "FRIENDSWOOD TX" },
+	{ "FRISCO TX" },
+	{ "FULLERTON CA" },
+	{ "GAINESVILLE FL" },
+	{ "GARDEN GROVE CA" },
 	{ "GARLAND TX" },
 	{ "GILBERT AZ" },
 	{ "GLENDALE AZ" },
+	{ "GLENDALE CA" },
+	{ "GRAND PRAIRIE TX" },
+	{ "GRAND RAPIDS MI" },
+	{ "GREEN BAY WI" },
 	{ "GREENSBORO NC" },
+	{ "GRESHAM OR" },
 	{ "GUADALAJARA MEXICO" },
 	{ "GUANGZHOU CHINA" },
 	{ "HAMBURG GERMANY" },
+	{ "HAMPTON VA" },
 	{ "HANGZHOU CHINA" },
+	{ "HARTFORD CT" },
+	{ "HAYWARD CA" },
 	{ "HENDERSON NV" },
 	{ "HIALEAH FL" },
+	{ "HIGH POINT NC" },
+	{ "HOLLYWOOD FL" },
 	{ "HONG KONG CHINA" },
 	{ "HONOLULU HI" },
 	{ "HOUSTON TX" },
+	{ "HUNTINGTON BEACH CA" },
+	{ "HUNTSVILLE AL" },
 	{ "HYDERABAD INDIA" },
+	{ "INDEPENDENCE MO" },
 	{ "INDIANAPOLIS IN" },
+	{ "INGLEWOOD CA" },
 	{ "IRVINE CA" },
+	{ "IRVING TX" },
 	{ "ISTANBUL TURKEY" },
+	{ "JACKSON MS" },
 	{ "JACKSONVILLE FL" },
 	{ "JAKARTA INDONESIA" },
 	{ "JERSEY CITY NJ" },
+	{ "JOLIET IL" },
 	{ "KANSAS  MO" },
+	{ "KANSAS CITY KS" },
+	{ "KANSAS CITY MO" },
 	{ "KARACHI PAKISTAN" },
+	{ "KENT WA" },
+	{ "KILLEEN TX" },
+	{ "KNOXVILLE TN" },
 	{ "KOLKATA INDIA" },
+	{ "LAFAYETTE LA" },
 	{ "LAGOS NIGERIA" },
+	{ "LAKELAND FL" },
+	{ "LAKEWOOD CO" },
+	{ "LANCASTER CA" },
+	{ "LANSING MI" },
 	{ "LAREDO TX" },
+	{ "LAS CRUCES NM" },
 	{ "LAS VEGAS NV" },
+	{ "LEWISVILLE TX" },
 	{ "LEXINGTON KY" },
 	{ "LIMA PERU" },
 	{ "LINCOLN NE" },
+	{ "LITTLE ROCK AR" },
 	{ "LONDON UK" },
 	{ "LONG BEACH CA" },
 	{ "LOS ANGELES CA" },
 	{ "LOUISVILLE KY" },
+	{ "LOWELL MA" },
 	{ "LUANDA ANGOLA" },
 	{ "LUBBOCK TX" },
+	{ "MACON GA" },
 	{ "MADISON WA" },
 	{ "MADISON WI" },
 	{ "MADRID SPAIN" },
+	{ "MANCHESTER NH" },
 	{ "MANILA PHILIPPINES" },
+	{ "MCALLEN TX" },
+	{ "MCKINNEY TX" },
 	{ "MELBOURNE AUSTRALIA" },
 	{ "MEMPHIS TN" },
 	{ "MESA AZ" },
+	{ "MESQUITE TX" },
 	{ "MEXICO CITY MEXICO" },
 	{ "MIAMI FL" },
+	{ "MIAMI GARDENS FL" },
+	{ "MIDLAND TX" },
 	{ "MILAN ITALY" },
 	{ "MILWAUKEE WA" },
 	{ "MINNEAPOLIS MN" },
+	{ "MIRAMAR FL" },
+	{ "MOBILE AL" },
+	{ "MODESTO CA" },
 	{ "MONTERREY MEXICO" },
+	{ "MONTGOMERY AL" },
 	{ "MONTGOMERY WV" },
+	{ "MORENO VALLEY CA" },
 	{ "MUMBAI INDIA" },
 	{ "MUNICH GERMANY" },
+	{ "MURFREESBORO TN" },
+	{ "MURRIETA CA" },
 	{ "NAGOYA JAPAN" },
 	{ "NANCHANG CHINA" },
 	{ "NANJING CHINA" },
+	{ "NAPERVILLE IL" },
 	{ "NASHVILLE TN" },
 	{ "NEW DELHI INDIA" },
+	{ "NEW HAVEN CT" },
+	{ "NEW ORLEANS LA" },
 	{ "NEW ORLEANS LA" },
 	{ "NEW YORK NY" },
 	{ "NEWARK NJ" },
+	{ "NEWPORT NEWS VA" },
 	{ "NORFOLK VA" },
+	{ "NORMAN OK" },
+	{ "NORTH CHARLESTON SC" },
+	{ "NORTH LAS VEGAS NV" },
+	{ "NORWALK CA" },
 	{ "OAKLAND CA" },
+	{ "OCEANSIDE CA" },
+	{ "ODESSA TX" },
 	{ "OKLAHOMA CITY OK" },
+	{ "OLATHE KS" },
 	{ "OMAHA NE" },
+	{ "ONTARIO CA" },
+	{ "ORANGE CA" },
 	{ "ORLANDO FL" },
 	{ "OSAKA JAPAN" },
+	{ "OVERLAND PARK KS" },
+	{ "OXNARD CA" },
+	{ "PALM BAY FL" },
+	{ "PALMDALE CA" },
 	{ "PARIS FRANCE" },
+	{ "PASADENA CA" },
+	{ "PASADENA TX" },
+	{ "PATERSON NJ" },
+	{ "PEARLAND TX" },
+	{ "PEMBROKE PINES FL" },
+	{ "PEORIA AZ" },
+	{ "PEORIA IL" },
 	{ "PHILADELPHIA PA" },
 	{ "PHOENIX AZ" },
 	{ "PITTSBURGH PA" },
 	{ "PLANO TX" },
+	{ "POMONA CA" },
+	{ "POMPANO BEACH FL" },
+	{ "PORT ST LUCIE FL" },
 	{ "PORTLAND OR" },
+	{ "PROVIDENCE RI" },
+	{ "PROVO UT" },
+	{ "PUEBLO CO" },
 	{ "PUNE INDIA" },
 	{ "QINGDAO CHINA" },
 	{ "RALEIGH NC" },
+	{ "RANCHO CUCAMONGA CA" },
 	{ "RENO NV" },
 	{ "RHINE RUHR GERMANY" },
+	{ "RIALTO CA" },
+	{ "RICHARDSON TX" },
+	{ "RICHMOND CA" },
 	{ "RICHMOND VA" },
 	{ "RIO DE JANEIRO BR" },
 	{ "RIVERSIDE CA" },
+	{ "ROCHESTER MN" },
+	{ "ROCHESTER NY" },
+	{ "ROCKFORD IL" },
 	{ "ROME ITALY" },
+	{ "ROSEVILLE CA" },
+	{ "ROUND ROCK TX" },
 	{ "SACRAMENTO CA" },
+	{ "SALEM OR" },
+	{ "SALINAS CA" },
+	{ "SALT LAKE CITY UT" },
 	{ "SAN ANTONIO TX" },
 	{ "SAN BERNARDINO CA" },
 	{ "SAN DIEGO CA" },
 	{ "SAN FRANCISCO CA" },
 	{ "SAN JOSE CA" },
+	{ "SAN MATEO CA" },
+	{ "SANDY SPRINGS GA" },
+	{ "SANTA ANA CA" },
+	{ "SANTA CLARA CA" },
+	{ "SANTA CLARITA CA" },
+	{ "SANTA MARIA CA" },
+	{ "SANTA ROSA CA" },
 	{ "SANTIAGO CHILE" },
 	{ "SAO PAULO BRAZIL" },
+	{ "SAVANNAH GA" },
 	{ "SCOTTSDALE AZ" },
 	{ "SEATTLE WA" },
 	{ "SEOUL SOUTH KOREA" },
 	{ "SHANGHAI CHINA" },
 	{ "SHENYANG CHINA" },
 	{ "SHENZHEN CHINA" },
+	{ "SHREVEPORT LA" },
+	{ "SIMI VALLEY CA" },
+	{ "SIOUX FALLS SD" },
+	{ "SOUTH BEND IN" },
+	{ "SPOKANE WA" },
+	{ "SPRINGFIELD IL" },
+	{ "SPRINGFIELD MA" },
+	{ "SPRINGFIELD MO" },
 	{ "ST LOUIS MO" },
 	{ "ST PAUL MN" },
 	{ "ST PETERSBURG FL" },
+	{ "STAMFORD CT" },
+	{ "STERLING HEIGHTS MI" },
+	{ "STOCKTON CA" },
 	{ "STUTTGART GERMANY" },
+	{ "SUNNYVALE CA" },
 	{ "SURAT INDIA" },
+	{ "SURPRISE AZ" },
 	{ "SYDNEY AUSTRALIA" },
+	{ "SYRACUSE NY" },
+	{ "TACOMA WA" },
 	{ "TAIPEI TAIWAN" },
+	{ "TALLAHASSEE FL" },
 	{ "TAMPA FL" },
 	{ "TEHRAN IRAN" },
+	{ "TEMECULA CA" },
+	{ "TEMPE AZ" },
+	{ "THORNTON CO" },
+	{ "THOUSAND OAKS CA" },
 	{ "TIANJIN CHINA" },
 	{ "TOKYO JAPAN" },
 	{ "TOLEDO OH" },
+	{ "TOPEKA KS" },
 	{ "TORONTO CANADA" },
+	{ "TORRANCE CA" },
 	{ "TUCSON AZ" },
 	{ "TULSA OK" },
+	{ "TYLER TX" },
+	{ "VALLEJO CA" },
+	{ "VANCOUVER WA" },
+	{ "VENTURA CA" },
+	{ "VICTORVILLE CA" },
 	{ "VIRGINIA BEACH VA" },
+	{ "VISALIA CA" },
+	{ "WACO TX" },
+	{ "WARREN MI" },
 	{ "WASHINGTON DC" },
+	{ "WATERBURY CT" },
 	{ "WENZHOU CHINA" },
+	{ "WEST COVINA CA" },
+	{ "WEST JORDAN UT" },
+	{ "WEST PALM BEACH FL" },
+	{ "WEST VALLEY CITY UT" },
+	{ "WESTMINSTER CO" },
+	{ "WICHITA FALLS TX" },
 	{ "WICHITA KS" },
+	{ "WILMINGTON NC" },
 	{ "WINSTON NC" },
+	{ "WINSTON–SALEM NC" },
+	{ "WORCESTER MA" },
 	{ "WUHAN CHINA" },
 	{ "XIAN CHINA" },
+	{ "YONKERS NY" },
 	{ "ZHENGZHOU CHINA" }
 };
 
 // QSO parts
 
-const BHMorse_QSOPart BHMorse::_QSOParts[BHMORSE_QSOPART_NUMROW] PROGMEM =
+const BHMorse_QSOPart BHMorse::_QSOParts[] PROGMEM =
 {
 	{" TNX FER CALL"},		// FB1
 	{" FB"},							// FB2
-	{""},									// FB3
+	{" FB OM"},						// FB3
+	{" R R"},							// FB4
+	{""},									// FB5
 	{" DE "},							// DE
 	{" = UR RST IS "},		// RST1
 	{" = RST "},					// RST2
-	{" = NAME IS "},			// Name1
-	{" = NAME "},					// Name2
+	{" = MY NAME IS "},		// Name1
+	{" = NAME HR IS "},		// Name2
+	{" = NAME IS "},			// Name3
+	{" = NAME "},					// Name4
 	{" = QTH IS "},				// QTH1
 	{" = QTH "},					// QTH2
-	{" = BK TO YOU "},		// Bk2U1
-	{" = "},							// Bk2U2
+	{" = HW CPY? "},			// Bk2U1
+	{" = BK TO U "},			// Bk2U2
+	{" = "},							// Bk2U3
 	{" K "},							// K1
 	{" ("}								// K2 {KN}
 };
@@ -375,9 +680,8 @@ char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 // Character map
 //////////////////////////////////////////////////////////////////////////////
 
-const BHMorse::charElement BHMorse::_charElemMap[BHMORSE_CHAR_ELEMENT_MAP_LENGTH] PROGMEM =
+const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 {
-
 	{8,  7, 0x00000000}, // inter-character space
 	{7, 19, 0xEBAEE000}, // !
 	{6, 15, 0xBABA0000}, // "
@@ -449,7 +753,7 @@ void BHMorse::getRandomName(char* retV)
 {
 	// return a random name from the table in PROGMEM
 
-	int r = random(0, BHMORSE_FIRSTNAME_NUMROW);
+	int r = random(0, ARRAY_SIZE(_firstNames));
 
 	BHMorse_FirstName buffer;
 	memcpy_P(&buffer, &_firstNames[r], sizeof(buffer));
@@ -460,7 +764,7 @@ void BHMorse::getRandomCity(char* retV)
 {
 	// return a random city from the table in PROGMEM
 
-	int r = random(0, BHMORSE_CITY_NUMROW);
+	int r = random(0, ARRAY_SIZE(_cities));
 
 	BHMorse_City buffer;
 	memcpy_P(&buffer, &_cities[r], sizeof(buffer));
@@ -485,8 +789,6 @@ void BHMorse::getRandomCall(char* retV)
 	strcpy(retV, "");
 
 	// prefix
-
-	///TODO: only use legal IARU prefixes
 
 	n = random(1, 3);
 	for (byte i = 0; i < n; i++)
@@ -551,11 +853,12 @@ void BHMorse::getQSOPart(char* retV, int p)
 
 void BHMorse::redoCharGroupPtrs()
 {
-	// populate the character group pointer table
+	// populate a table with pointers to all of the characters
+	// in the current range of enabled groups
 
 	_numCharGroupPtrs = 0;
 
-	for (int i = 0; i < BHMORSE_CHAR_ELEMENT_MAP_LENGTH; i++)
+	for (int i = 0; i < ARRAY_SIZE(_charElemMap); i++)
 	{
 		charElement c = getCharElement(i);
 		if (c.charGroup <= highestEnabledGroup())
@@ -585,10 +888,10 @@ void BHMorse::loadChar()
 		byte c = _message[_numCharsInMsgSent];
 		int c2s = c - BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
 
-		// see if it's a valid index into the character map:
+		// see if it's a valid index into the character map
 
 		if ((c2s >= 0) &&
-				(c2s < BHMORSE_CHAR_ELEMENT_MAP_LENGTH))
+				(c2s < ARRAY_SIZE(_charElemMap)))
 		{
 			_tempChar = getCharElement(c2s);
 		}
@@ -597,7 +900,7 @@ void BHMorse::loadChar()
 
 void BHMorse::loadNextChar()
 {
-	// load next random character to send with group <= highestEnabledGroup
+	// load next random character to send in enabled difficulty groups
 
 	int rndChar = random(0, _numCharGroupPtrs);
 	_tmpBuffer[0] = _ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
@@ -607,7 +910,7 @@ void BHMorse::loadNextChar()
 
 void BHMorse::loadNextGroup()
 {
-	// load next group of random characters with group <= highestEnabledGroup
+	// load next group of random characters in enabled difficulty groups
 
 	byte rndNumChars = random(BHMORSE_RANDOMGROUP_MIN, BHMORSE_RANDOMGROUP_MAX + 1);
 	byte rndChar;
@@ -650,7 +953,7 @@ void BHMorse::loadNextQSO()
 
 	// FB
 
-	p = random(BHMorse_QSOPart_Row::FB1, BHMorse_QSOPart_Row::FB3 + 1);
+	p = random(BHMorse_QSOPart_Row::FB1, BHMorse_QSOPart_Row::FB5 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -665,7 +968,7 @@ void BHMorse::loadNextQSO()
 
 	// Name
 
-	p = random(BHMorse_QSOPart_Row::Name1, BHMorse_QSOPart_Row::Name2 + 1);
+	p = random(BHMorse_QSOPart_Row::Name1, BHMorse_QSOPart_Row::Name4 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -683,7 +986,7 @@ void BHMorse::loadNextQSO()
 
 	// Back to you
 
-	p = random(BHMorse_QSOPart_Row::Bk2U1, BHMorse_QSOPart_Row::Bk2U2 + 1);
+	p = random(BHMorse_QSOPart_Row::Bk2U1, BHMorse_QSOPart_Row::Bk2U3 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -715,6 +1018,8 @@ BHMorse::BHMorse()
 {
 	// constructor
 	// put stuff you don't want to do until main.setup() in begin()
+
+	_ptrsToCharsInGroupRange = new byte[ARRAY_SIZE(_charElemMap)];
 
 	// stop running
 
@@ -921,7 +1226,7 @@ void BHMorse::message(char* retV)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// message paremeter setters
+// message parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
 void BHMorse::setMessage(char const* newValue)
@@ -1012,7 +1317,7 @@ void BHMorse::readOverallSpeed()
 
 void BHMorse::readUserCharSpeed()
 {
-	// save user character speed
+	// read user character speed
 
 	BHMorse_Wpm tmpWpm;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_USERCHARSPEED, tmpWpm);
@@ -1021,7 +1326,7 @@ void BHMorse::readUserCharSpeed()
 
 void BHMorse::readHighestEnabledGroup()
 {
-	// save highest enabled group
+	// read highest enabled group
 
 	BHMorse_charElemMap_Group tmpGroup;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP, tmpGroup);
@@ -1030,7 +1335,7 @@ void BHMorse::readHighestEnabledGroup()
 
 void BHMorse::readPitch()
 {
-	// save pitch
+	// read pitch
 
 	BHMorse_Hz tmpHz;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_PITCH, tmpHz);
@@ -1039,7 +1344,7 @@ void BHMorse::readPitch()
 
 void BHMorse::loadSettings()
 {
-	// read persistent settings to EEPROM
+	// read persistent settings from EEPROM
 
 	if (readSignature() == BHMORSE_EEPROM_SIGNATURE_V1)
 	{
@@ -1060,7 +1365,7 @@ void BHMorse::loadSettings()
 
 void BHMorse::resetSettings()
 {
-	// reset settings to factor defaults
+	// reset settings to factory defaults
 
 	saveSignature();
 	setOverallSpeed(BHMORSE_DEFAULT_OVERALLSPEED);
@@ -1134,7 +1439,7 @@ boolean BHMorse::elemsRemainInChar()
 
 boolean BHMorse::charsRemainInMsg()
 {
-	// returns true if any characters remain to be send in the message
+	// returns true if any characters remain to be sent in the message
 
 	return (_numCharsInMsgSent < strlen(_message));
 }
@@ -1142,7 +1447,7 @@ boolean BHMorse::charsRemainInMsg()
 boolean BHMorse::msgDone()
 {
 	// returns true if any elements remain to be sent in the current character,
-	// or any characters remain to be send in the message
+	// or any characters remain to be sent in the message
 
 	return (!elemsRemainInChar() && !charsRemainInMsg());
 }
@@ -1202,7 +1507,7 @@ void BHMorse::sendNextElem()
 
 			loadChar();
 
-			// if the next char isn't a space, wait inter-character space,
+			// only if the next char isn't a space, wait inter-character space,
 			// so we don't add inter-char space to inter-word space
 
 			if (!isSpace(_tempChar))
@@ -1212,7 +1517,7 @@ void BHMorse::sendNextElem()
 		}
 		else
 		{
-			// message is finished;
+			// message is finished
 			// see if I need to load the next message
 
 			switch (runMode())

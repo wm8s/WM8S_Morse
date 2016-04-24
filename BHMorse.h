@@ -4,9 +4,7 @@
 //
 //	Created 2016-04-01 by Rob Bailey, WM8S
 //
-//
-//
-//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef BHMorse_h
 #define BHMorse_h
@@ -16,17 +14,33 @@
 //#undef BHMORSE_DEBUG
 #define BHMORSE_DEBUG
 
+// misc stuff
+
+#define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+
 // EEPROM safety signature
 
 #define BHMORSE_EEPROM_SIGNATURE_V1 0x5AFE
 
 // EEPROM memory map
 
-#define BHMORSE_EEPROM_ADDR_SIGNATURE							0
-#define BHMORSE_EEPROM_ADDR_OVERALLSPEED					(BHMORSE_EEPROM_ADDR_SIGNATURE + sizeof(BHMorse_EEPROMSignature))
-#define BHMORSE_EEPROM_ADDR_USERCHARSPEED					(BHMORSE_EEPROM_ADDR_OVERALLSPEED + sizeof(BHMorse_WpmFactor))
-#define BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP		(BHMORSE_EEPROM_ADDR_USERCHARSPEED + sizeof(BHMorse_WpmFactor))
-#define BHMORSE_EEPROM_ADDR_PITCH									(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP + sizeof(BHMorse_charElemMap_Group))
+#define BHMORSE_EEPROM_ADDR_SIGNATURE 0
+
+#define BHMORSE_EEPROM_ADDR_OVERALLSPEED \
+	(BHMORSE_EEPROM_ADDR_SIGNATURE + \
+	sizeof(BHMorse_EEPROMSignature))
+
+#define BHMORSE_EEPROM_ADDR_USERCHARSPEED \
+	(BHMORSE_EEPROM_ADDR_OVERALLSPEED + \
+	sizeof(BHMorse_WpmFactor))
+
+#define BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP \
+	(BHMORSE_EEPROM_ADDR_USERCHARSPEED + \
+	sizeof(BHMorse_WpmFactor))
+
+#define BHMORSE_EEPROM_ADDR_PITCH \
+	(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP + \
+	sizeof(BHMorse_charElemMap_Group))
 
 // EEPROM write delay
 
@@ -35,13 +49,10 @@
 // for random tables
 
 #define BHMORSE_FIRSTNAME_MAXLEN 10
-#define BHMORSE_FIRSTNAME_NUMROW 155
 
 #define BHMORSE_CITY_MAXLEN 20
-#define BHMORSE_CITY_NUMROW 165
 
 #define BHMORSE_QSOPART_MAXLEN 20
-#define BHMORSE_QSOPART_NUMROW 20
 
 // for randomSeed()
 
@@ -92,7 +103,7 @@
 
 // character element map helpers
 
-#define BHMORSE_CHAR_ELEMENT_MAP_LENGTH 65
+
 #define BHMORSE_CHAR_ELEMENT_MAP_OFFSET ' '
 #define BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE 8
 #define BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED 9
@@ -127,15 +138,20 @@ enum BHMorse_QSOPart_Row
 	FB1 = 0,
 	FB2,
 	FB3,
+	FB4,
+	FB5,
 	DE,
 	RST1,
 	RST2,
 	Name1,
 	Name2,
+	Name3,
+	Name4,
 	QTH1,
 	QTH2,
 	Bk2U1,
 	Bk2U2,
+	Bk2U3,
 	K1,
 	K2
 };
@@ -267,8 +283,8 @@ private:
 
 	// map of characters within current group range
 
-	static const charElement _charElemMap[BHMORSE_CHAR_ELEMENT_MAP_LENGTH];
-	byte _ptrsToCharsInGroupRange[BHMORSE_CHAR_ELEMENT_MAP_LENGTH];
+	static const charElement _charElemMap[];
+	byte* _ptrsToCharsInGroupRange;
 	byte _numCharGroupPtrs;
 	
 	// copy of the character currently being sent
