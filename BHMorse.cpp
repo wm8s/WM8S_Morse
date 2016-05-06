@@ -1363,18 +1363,24 @@ const BHMorse_QSOPart BHMorse::_QSOParts[] PROGMEM =
 	{" FB OM"},						// FB3
 	{" R R"},							// FB4
 	{""},									// FB5
+
 	{" DE "},							// DE
+
 	{" = UR RST IS "},		// RST1
 	{" = RST "},					// RST2
+
 	{" = MY NAME IS "},		// Name1
 	{" = NAME HR IS "},		// Name2
 	{" = NAME IS "},			// Name3
 	{" = NAME "},					// Name4
+
 	{" = QTH IS "},				// QTH1
 	{" = QTH "},					// QTH2
+
 	{" = HW CPY? "},			// Bk2U1
 	{" = BK TO U "},			// Bk2U2
 	{" = "},							// Bk2U3
+
 	{" K "},							// K1
 	{" ("}								// K2 {KN}
 };
@@ -1389,13 +1395,13 @@ char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 
 const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 {
-	{8,  7, 0x00000000}, // inter-character space
+	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE,  7, 0x00000000}, // inter-character space
 	{7, 19, 0xEBAEE000}, // !
 	{6, 15, 0xBABA0000}, // "
 	{5, 15, 0xABAE0000}, // # {SK}
 	{7, 17, 0xABAB8000}, // $
 	{7, 11, 0xABA00000}, // % {SN}
-	{9, 15, 0xEBAE0000}, // & {CT}/{KA} start of message
+	{8, 15, 0xEBAE0000}, // & {CT}/{KA} start of message
 	{7, 19, 0xBBBBA000}, // '
 	{5, 15, 0xEBBA0000}, // ( also {KN}
 	{7, 19, 0xEBBAE000}, // )
@@ -1417,9 +1423,9 @@ const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 	{4, 17, 0xEEEE8000}, // 9
 	{7, 17, 0xEEEA8000}, // :
 	{7, 17, 0xEBAE8000}, // ;
-	{9,  0, 0x00000000}, // < UNUSED
+	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // < UNUSED
 	{5, 13, 0xEAB80000}, // =
-	{9,  0, 0x00000000}, // > UNUSED
+	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // > UNUSED
 	{5, 15, 0xAEEA0000}, // ?
 	{6, 17, 0xBBAE8000}, // @
 	{1,  5, 0xB8000000}, // A
@@ -1448,9 +1454,9 @@ const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 	{3, 11, 0xEAE00000}, // X
 	{3, 13, 0xEBB80000}, // Y
 	{3, 11, 0xEEA00000}, // Z
-	{9,  0, 0x00000000}, // [ UNUSED
+	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // [ UNUSED
 	{6, 23, 0xABBBAA00}, // "\" {SOS}
-	{9,  0, 0x00000000}, // ] UNUSED
+	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // ] UNUSED
 	{3, 15, 0xAAAA0000}, // ^ {HH} error
 	{7, 17, 0xAEEB8000}, // _
 	{5, 11, 0xBAA00000}  // ` {AS} wait
@@ -1460,7 +1466,7 @@ void BHMorse::getRandomName(char* retV)
 {
 	// return a random name from the table in PROGMEM
 
-	int r = random(0, ARRAY_SIZE(_firstNames));
+	int r = random(0, BH_ARRAY_SIZE(_firstNames));
 
 	BHMorse_FirstName buffer;
 	memcpy_P(&buffer, &_firstNames[r], sizeof(buffer));
@@ -1471,7 +1477,7 @@ void BHMorse::getRandomCity(char* retV)
 {
 	// return a random city from the table in PROGMEM
 
-	int r = random(0, ARRAY_SIZE(_cities));
+	int r = random(0, BH_ARRAY_SIZE(_cities));
 
 	BHMorse_City buffer;
 	memcpy_P(&buffer, &_cities[r], sizeof(buffer));
@@ -1484,12 +1490,11 @@ void BHMorse::getRandomCall(char* retV)
 	//
 	// 1-2 letters
 	// 1 number
-	// 1-3 letters
-	// but fix A1A to A1AA
+	// 1-3 letters (but fix A1B to A1BC or A1BCD)
 
-	byte n;
-	byte p;
-	byte l;
+	byte n;		// # of times
+	byte p;		// random char
+	byte l;		// length
 
 	// empty
 
@@ -1500,28 +1505,28 @@ void BHMorse::getRandomCall(char* retV)
 	n = random(1, 3);
 	for (byte i = 0; i < n; i++)
 	{
-		p = random('A', 'Z' + 1);
+		p = random(BHMORSE_PREFIX_MIN, BHMORSE_PREFIX_MAX + 1);
 		l = strlen(retV);
 		retV[l] = p;
-		retV[l + 1] = '\0';
+		retV[l + 1] = BH_END_OF_STRING;
 	}
 
 	// number
 
-	p = random('0', '9' + 1);
+	p = random(BHMORSE_NUMBER_MIN, BHMORSE_NUMBER_MAX + 1);
 	l = strlen(retV);
 	retV[l] = p;
-	retV[l + 1] = '\0';
+	retV[l + 1] = BH_END_OF_STRING;
 
 	// suffix
 
 	n = random(4 - strlen(retV), 4);	// if "A1" so far, force suffix to >= 2 chars
 	for (byte i = 0; i < n; i++)
 	{
-		p = random('A', 'Z' + 1);
+		p = random(BHMORSE_SUFFIX_MIN, BHMORSE_SUFFIX_MAX + 1);
 		l = strlen(retV);
 		retV[l] = p;
-		retV[l + 1] = '\0';
+		retV[l + 1] = BH_END_OF_STRING;
 	}
 }
 
@@ -1529,20 +1534,20 @@ void BHMorse::getRandomRST(char* retV)
 {
 	// random RST
 	//
-	// [3-5]
-	// [4-9]
-	// [7-9]
+	// R = [3-5]
+	// S = [4-9]
+	// T = [7-9]
 
 	strcpy(retV, "");
-	retV[0] = random('3', '5' + 1);
-	retV[1] = random('4', '9' + 1);
-	retV[2] = random('7', '9' + 1);
-	retV[3] = '\0';
+	retV[0] = random(BHMORSE_RST_R_MIN, BHMORSE_RST_R_MAX + 1);
+	retV[1] = random(BHMORSE_RST_S_MIN, BHMORSE_RST_S_MAX + 1);
+	retV[2] = random(BHMORSE_RST_T_MIN, BHMORSE_RST_T_MAX + 1);
+	retV[3] = BH_END_OF_STRING;
 }
 
 BHMorse::charElement BHMorse::getCharElement(int p)
 {
-	// read a character from PROGMEM
+	// read a character definition from PROGMEM
 
 	charElement retV;
 	memcpy_P(&retV, &_charElemMap[p], sizeof(charElement));
@@ -1560,12 +1565,12 @@ void BHMorse::getQSOPart(char* retV, int p)
 
 void BHMorse::redoCharGroupPtrs()
 {
-	// populate a table with pointers to all of the characters
+	// populate the table with pointers to all of the characters
 	// in the current range of enabled groups
 
 	_numCharGroupPtrs = 0;
 
-	for (int i = 0; i < ARRAY_SIZE(_charElemMap); i++)
+	for (int i = 0; i < BH_ARRAY_SIZE(_charElemMap); i++)
 	{
 		charElement c = getCharElement(i);
 		if (c.charGroup <= highestEnabledGroup())
@@ -1585,10 +1590,10 @@ boolean BHMorse::isSpace(charElement pChar)
 
 void BHMorse::loadChar()
 {
+	// load a copy of the next character to be sent
+
 	_tempChar = BHMORSE_CHAR_ELEMENT_MAP_UNUSED;
 	_numElemsInCharSent = 0;
-
-	// load a copy of the next character to be sent
 
 	if (strlen(_message) > 0)
 	{
@@ -1598,7 +1603,7 @@ void BHMorse::loadChar()
 		// see if it's a valid index into the character map
 
 		if ((c2s >= 0) &&
-				(c2s < ARRAY_SIZE(_charElemMap)))
+				(c2s < BH_ARRAY_SIZE(_charElemMap)))
 		{
 			_tempChar = getCharElement(c2s);
 		}
@@ -1611,7 +1616,7 @@ void BHMorse::loadNextChar()
 
 	int rndChar = random(0, _numCharGroupPtrs);
 	_tmpBuffer[0] = _ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
-	_tmpBuffer[1] = '\0';
+	_tmpBuffer[1] = BH_END_OF_STRING;
 	setMessage(_tmpBuffer);
 }
 
@@ -1627,7 +1632,7 @@ void BHMorse::loadNextGroup()
 		rndChar = random(0, _numCharGroupPtrs);
 		_tmpBuffer[i] = char(_ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET);
 	}
-	_tmpBuffer[rndNumChars] = '\0';
+	_tmpBuffer[rndNumChars] = BH_END_OF_STRING;
 
 	setMessage(_tmpBuffer);
 }
@@ -1726,7 +1731,7 @@ BHMorse::BHMorse()
 	// constructor
 	// put stuff you don't want to do until main.setup() in begin()
 
-	_ptrsToCharsInGroupRange = new byte[ARRAY_SIZE(_charElemMap)];
+	_ptrsToCharsInGroupRange = new byte[BH_ARRAY_SIZE(_charElemMap)];
 
 	// stop running
 
@@ -1892,7 +1897,7 @@ void BHMorse::setHighestEnabledGroup(BHMorse_charElemMap_Group newValue)
 // sound parameter getters
 //////////////////////////////////////////////////////////////////////////////
 
-int BHMorse::tonePin()
+BH_PIN BHMorse::tonePin()
 {
 	return _tonePin;
 }
@@ -1906,7 +1911,7 @@ BHMorse_Hz BHMorse::pitch()
 // sound parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
-void BHMorse::setTonePin(int newValue)
+void BHMorse::setTonePin(BH_PIN newValue)
 {
 	_tonePin = newValue;
 	pinMode(_tonePin, OUTPUT);
@@ -2116,7 +2121,7 @@ void BHMorse::savePitch()
 // other methods
 //////////////////////////////////////////////////////////////////////////////
 
-void BHMorse::begin(int tonePin)
+void BHMorse::begin(BH_PIN tonePin)
 {
 	// do stuff that you can't or don't want to do in the constructor
 
@@ -2290,36 +2295,6 @@ void BHMorse::sendSpace()
 
 	noTone(tonePin());
 	waitInterElemSpace();
-}
-
-void BHMorse::beepHi()
-{
-	// beep high
-
-	for (byte i = 0; i < BHMORSE_TONE_HI_1_LOOPS; i++)
-	{
-		tone(tonePin(), BHMORSE_TONE_HI_1_HZ);
-		delay(BHMORSE_TONE_HI_1_DURATION);
-		tone(tonePin(), BHMORSE_TONE_HI_2_HZ);
-		delay(BHMORSE_TONE_HI_2_DURATION);
-		noTone(tonePin());
-	}
-	delay(BHMORSE_TONE_HI_3_DURATION);
-}
-
-void BHMorse::beepLo()
-{
-	// beep low
-
-	for (byte i = 0; i < BHMORSE_TONE_LO_1_LOOPS; i++)
-	{
-		tone(tonePin(), BHMORSE_TONE_LO_1_HZ);
-		delay(BHMORSE_TONE_LO_1_DURATION);
-		tone(tonePin(), BHMORSE_TONE_LO_2_HZ);
-		delay(BHMORSE_TONE_LO_2_DURATION);
-		noTone(tonePin());
-	}
-	delay(BHMORSE_TONE_LO_3_DURATION);
 }
 
 void BHMorse::waitInterElemSpace()

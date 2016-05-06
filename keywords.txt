@@ -29,8 +29,6 @@ _tmpBuffer	KEYWORD2
 _tonePin	KEYWORD2
 _userCharSpeed	KEYWORD2
 _wpmSchemeFactor	KEYWORD2
-beepHi	KEYWORD2
-beepLo	KEYWORD2
 begin	KEYWORD2
 charDahMarkTime	KEYWORD2
 charDitMarkTime	KEYWORD2

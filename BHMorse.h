@@ -16,11 +16,14 @@
 
 // misc stuff
 
-#define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+#define BH_ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+#define BH_END_OF_STRING '\0'
+
+typedef uint8_t BH_PIN;
 
 // EEPROM safety signature
 
-#define BHMORSE_EEPROM_SIGNATURE_V1 0x5AFE
+#define BHMORSE_EEPROM_SIGNATURE_V1 0x5AFE	// safe
 
 // EEPROM memory map
 
@@ -53,6 +56,24 @@
 #define BHMORSE_CITY_MAXLEN 20
 
 #define BHMORSE_QSOPART_MAXLEN 20
+
+#define BHMORSE_PREFIX_MIN 'A'
+#define BHMORSE_PREFIX_MAX 'Z'
+
+#define BHMORSE_NUMBER_MIN '0'
+#define BHMORSE_NUMBER_MAX '9'
+
+#define BHMORSE_SUFFIX_MIN 'A'
+#define BHMORSE_SUFFIX_MAX 'Z'
+
+#define BHMORSE_RST_R_MIN '3'
+#define BHMORSE_RST_R_MAX '5'
+
+#define BHMORSE_RST_S_MIN '4'
+#define BHMORSE_RST_S_MAX '9'
+
+#define BHMORSE_RST_T_MIN '7'
+#define BHMORSE_RST_T_MAX '9'
 
 // for randomSeed()
 
@@ -109,22 +130,6 @@
 #define BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED 9
 #define BHMORSE_CHAR_ELEMENT_MAP_HIELEMENTBIT 31
 #define BHMORSE_CHAR_ELEMENT_MAP_UNUSED {BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED, 0, 0}
-
-// tones
-
-#define BHMORSE_TONE_HI_1_LOOPS 3
-#define BHMORSE_TONE_HI_1_HZ	1000
-#define BHMORSE_TONE_HI_1_DURATION 25
-#define BHMORSE_TONE_HI_2_HZ 2000
-#define BHMORSE_TONE_HI_2_DURATION 25
-#define BHMORSE_TONE_HI_3_DURATION 100
-
-#define BHMORSE_TONE_LO_1_LOOPS 5
-#define BHMORSE_TONE_LO_1_HZ 1200
-#define BHMORSE_TONE_LO_1_DURATION 25
-#define BHMORSE_TONE_LO_2_HZ 600
-#define BHMORSE_TONE_LO_2_DURATION 25
-#define BHMORSE_TONE_LO_3_DURATION 100
 
 // message
 
@@ -253,7 +258,7 @@ private:
 
 	// tone() pin number
 
-	int _tonePin;
+	BH_PIN _tonePin;
 
 	// tone pitch
 
@@ -386,14 +391,14 @@ public:
 	// sound parameter getters
 	//------------------------------------------------------------
 
-	int tonePin();
+	BH_PIN tonePin();
 	BHMorse_Hz pitch();
 
 	//------------------------------------------------------------
 	// sound parameter setters
 	//------------------------------------------------------------
 
-	void setTonePin(int newValue);
+	void setTonePin(BH_PIN newValue);
 	void setPitch(BHMorse_Hz newValue, bool pSave);
 
 	//------------------------------------------------------------
@@ -424,7 +429,7 @@ public:
 	// misc. methods
 	//------------------------------------------------------------
 
-	void begin(int tonePin);
+	void begin(BH_PIN tonePin);
 	void resetSettings();
 
 	boolean elemsRemainInChar();
@@ -436,8 +441,6 @@ public:
 	void sendNextElem();
 	void sendMark(bool pStopAfter);
 	void sendSpace();
-	void beepHi();
-	void beepLo();
 
 	void waitInterElemSpace();
 	void waitInterCharSpace();
