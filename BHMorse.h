@@ -4,6 +4,9 @@
 //
 //	Copyright © 2016 Robert L. Bailey
 //
+//	Send Morse Code, including generating random characters, groups of
+//	characters, or plausible QSOs.
+//
 //////////////////////////////////////////////////////////////////////////////
 //
 //	This file is part of BHMorse.
@@ -36,7 +39,7 @@
 #define BH_ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
 #define BH_END_OF_STRING '\0'
 
-typedef uint8_t BH_PIN;
+typedef uint8_t BH_pin_t;
 
 // EEPROM safety signature
 
@@ -48,19 +51,19 @@ typedef uint8_t BH_PIN;
 
 #define BHMORSE_EEPROM_ADDR_OVERALLSPEED \
 	(BHMORSE_EEPROM_ADDR_SIGNATURE + \
-	sizeof(BHMorse_EEPROMSignature))
+	sizeof(BHMorse::eepromSignature_t))
 
 #define BHMORSE_EEPROM_ADDR_USERCHARSPEED \
 	(BHMORSE_EEPROM_ADDR_OVERALLSPEED + \
-	sizeof(BHMorse_WpmFactor))
+	sizeof(BHMorse::wpm_t))
 
-#define BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP \
+#define BHMORSE_EEPROM_ADDR_HIGHESTENABLEDDIFFICULTY \
 	(BHMORSE_EEPROM_ADDR_USERCHARSPEED + \
-	sizeof(BHMorse_WpmFactor))
+	sizeof(BHMorse::wpm_t))
 
 #define BHMORSE_EEPROM_ADDR_PITCH \
-	(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP + \
-	sizeof(BHMorse_charElemMap_Group))
+	(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDDIFFICULTY + \
+	sizeof(BHMorse::difficulty_t))
 
 // EEPROM write delay
 
@@ -111,10 +114,10 @@ typedef uint8_t BH_PIN;
 #define BHMORSE_MIN_WPM 5
 #define BHMORSE_MAX_WPM 60
 
-// valid real character (i.e., not including specials) group range
+// valid real character (i.e., not including specials) difficulty range
 
-#define BHMORSE_MIN_CHARACTER_GROUP 1
-#define BHMORSE_MAX_CHARACTER_GROUP 7
+#define BHMORSE_MIN_CHARACTER_DIFFICULTY 1
+#define BHMORSE_MAX_CHARACTER_DIFFICULTY 7
 
 // valid pitch range
 
@@ -135,7 +138,7 @@ typedef uint8_t BH_PIN;
 #define BHMORSE_DEFAULT_WPMSCHEMEFACTOR BHMORSE_WPMSCHEMEFACTOR_PARIS
 #define BHMORSE_DEFAULT_OVERALLSPEED 13
 #define BHMORSE_DEFAULT_USERCHARSPEED 18
-#define BHMORSE_DEFAULT_HIGHESTENABLEDGROUP 4
+#define BHMORSE_DEFAULT_ENABLEDDIFFICULTY 4
 #define BHMORSE_DEFAULT_PITCH 1000
 #define BHMORSE_DEFAULT_RUNMODE Idle
 
@@ -143,66 +146,15 @@ typedef uint8_t BH_PIN;
 
 
 #define BHMORSE_CHAR_ELEMENT_MAP_OFFSET ' '
-#define BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE 8
-#define BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED 9
+#define BHMORSE_CHAR_ELEMENT_MAP_DIFFICULTY_SPACE 8
+#define BHMORSE_CHAR_ELEMENT_MAP_DIFFICULTY_UNUSED 9
 #define BHMORSE_CHAR_ELEMENT_MAP_HIELEMENTBIT 31
-#define BHMORSE_CHAR_ELEMENT_MAP_UNUSED {BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED, 0, 0}
+#define BHMORSE_CHAR_ELEMENT_MAP_UNUSED {BHMORSE_CHAR_ELEMENT_MAP_DIFFICULTY_UNUSED, 0, 0}
 
 // message
 
 #define BHMORSE_MESSAGE_MAXLEN 250
 #define BHMORSE_MESSAGE_BUFRSIZE (BHMORSE_MESSAGE_MAXLEN + 1)
-
-// enums
-
-enum BHMorse_QSOPart_Row
-{
-	FB1 = 0,
-	FB2,
-	FB3,
-	FB4,
-	FB5,
-	DE,
-	RST1,
-	RST2,
-	Name1,
-	Name2,
-	Name3,
-	Name4,
-	QTH1,
-	QTH2,
-	Bk2U1,
-	Bk2U2,
-	Bk2U3,
-	K1,
-	K2
-};
-
-// typedefs
-
-typedef	unsigned long BHMorse_EEPROMSignature;
-typedef	unsigned long BHMorse_WpmFactor;
-typedef	unsigned long BHMorse_Duration;
-typedef byte BHMorse_Wpm;
-typedef unsigned int BHMorse_Hz;
-typedef byte BHMorse_charElemMap_Group;
-typedef byte BHMorse_charElemMap_NumElems;
-typedef unsigned long BHMorse_charElemMap_Elements;
-
-typedef struct
-{
-	char d[BHMORSE_FIRSTNAME_MAXLEN];
-} BHMorse_FirstName;
-
-typedef struct
-{
-	char d[BHMORSE_CITY_MAXLEN];
-} BHMorse_City;
-
-typedef struct
-{
-	char d[BHMORSE_QSOPART_MAXLEN];
-} BHMorse_QSOPart;
 
 // classes
 
@@ -210,13 +162,39 @@ class BHMorse
 {
 public:
 
+	// typedefs
+
+	typedef unsigned long eepromSignature_t;
+	typedef unsigned long wpmFactor_t;
+	typedef unsigned long duration_t;
+	typedef byte wpm_t;
+	typedef unsigned int hz_t;
+	typedef byte difficulty_t;
+	typedef byte charElemMap_numElems_t;
+	typedef unsigned long charElemMap_elements_t;
+
+	typedef struct
+	{
+		char d[BHMORSE_FIRSTNAME_MAXLEN];
+	} firstName_t;
+
+	typedef struct
+	{
+		char d[BHMORSE_CITY_MAXLEN];
+	} city_t;
+
+	typedef struct
+	{
+		char d[BHMORSE_QSOPART_MAXLEN];
+	} qsoPart_t;
+	
 	// a character map element
 
-	struct charElement
+	struct charElement_t
 	{
-		BHMorse_charElemMap_Group charGroup;
-		BHMorse_charElemMap_NumElems numElems;
-		BHMorse_charElemMap_Elements elements;
+		difficulty_t difficulty;
+		charElemMap_numElems_t numElems;
+		charElemMap_elements_t elements;
 	};
 	
 	// run modes
@@ -230,6 +208,31 @@ public:
 		SendQSOs,
 		SendFile
 	};
+
+	// QSO parts
+
+	enum QSOPart_Row
+	{
+		FB1 = 0,
+		FB2,
+		FB3,
+		FB4,
+		FB5,
+		DE,
+		RST1,
+		RST2,
+		Name1,
+		Name2,
+		Name3,
+		Name4,
+		QTH1,
+		QTH2,
+		Bk2U1,
+		Bk2U2,
+		Bk2U3,
+		K1,
+		K2
+	};
 	
 private:
 
@@ -239,9 +242,9 @@ private:
 	//
 	//////////////////////////////////////////////////////////////////////////////
 
-	static const BHMorse_FirstName _firstNames[];
-	static const BHMorse_City _cities[];
-	static const BHMorse_QSOPart _QSOParts[];
+	static const firstName_t _firstNames[];
+	static const city_t _cities[];
+	static const qsoPart_t _QSOParts[];
 
 	//////////////////////////////////////////////////////////////////////////////
 	//
@@ -255,19 +258,19 @@ private:
 
 	// WPM calculation scheme factor, in (ms * words) / (dit * minute)
 
-	BHMorse_WpmFactor _wpmSchemeFactor;
+	wpmFactor_t _wpmSchemeFactor;
 
 	// overall speed; "s" in ARRL calculations
 
-	BHMorse_Wpm _overallSpeed;
+	wpm_t _overallSpeed;
 
 	// user-selected character speed
 
-	BHMorse_Wpm _userCharSpeed;
+	wpm_t _userCharSpeed;
 
-	// highest enabled character group for random sending
+	// highest character difficulty for random sending
 
-	BHMorse_charElemMap_Group _highestEnabledGroup;
+	difficulty_t _enabledDifficulty;
 
 	//------------------------------------------------------------
 	// sound parameters
@@ -275,11 +278,11 @@ private:
 
 	// tone() pin number
 
-	BH_PIN _tonePin;
+	BH_pin_t _tonePin;
 
 	// tone pitch
 
-	BHMorse_Hz _pitch;
+	hz_t _pitch;
 
 	//------------------------------------------------------------
 	// message parameters
@@ -303,15 +306,15 @@ private:
 
 	char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 
-	// map of characters within current group range
+	// map of characters no harder than enabled difficulty
 
-	static const charElement _charElemMap[];
-	byte* _ptrsToCharsInGroupRange;
-	byte _numCharGroupPtrs;
+	static const charElement_t _charElemMap[];
+	byte* _ptrsToCharsWithEnabledDifficulty;
+	byte _numCharDifficultyPtrs;
 	
 	// copy of the character currently being sent
 
-	charElement _tempChar;
+	charElement_t _tempChar;
 
 	// the number of elements within the current character already sent
 
@@ -330,23 +333,23 @@ private:
 	// other
 
 	void loadSettings();
-	BHMorse_EEPROMSignature readSignature();
+	eepromSignature_t readSignature();
 	void readOverallSpeed();
 	void readUserCharSpeed();
-	void readHighestEnabledGroup();
+	void readEnabledDifficulty();
 	void readPitch();
 
 	void saveSignature();
 	void saveOverallSpeed();
 	void saveUserCharSpeed();
-	void saveHighestEnabledGroup();
+	void saveEnabledDifficulty();
 	void savePitch();
 	
-	void redoCharGroupPtrs();
+	void redoCharDifficultyPtrs();
 
-	charElement getCharElement(int p);
+	charElement_t getCharElement(int p);
 	void getQSOPart(char* retV, int p);
-	boolean isSpace(charElement pChar);
+	boolean isSpace(charElement_t pChar);
 	void loadChar();
 	void loadNextChar();
 	void loadNextGroup();
@@ -380,43 +383,43 @@ public:
 
 	// backed
 
-	BHMorse_WpmFactor wpmSchemeFactor();
-	BHMorse_Wpm overallSpeed();
-	BHMorse_Wpm userCharSpeed();
-	BHMorse_charElemMap_Group highestEnabledGroup();
+	wpmFactor_t wpmSchemeFactor();
+	wpm_t overallSpeed();
+	wpm_t userCharSpeed();
+	difficulty_t enabledDifficulty();
 
 	// computed
 
-	BHMorse_Wpm charSpeed();
-	BHMorse_Duration charDitMarkTime();
-	BHMorse_Duration charDitSpaceTime();
-	BHMorse_Duration charDahMarkTime();
-	BHMorse_Duration farnsworthDelayTime();
-	BHMorse_Duration interCharSpaceTime();
-	BHMorse_Duration interWordSpaceTime();
+	wpm_t charSpeed();
+	duration_t charDitMarkTime();
+	duration_t charDitSpaceTime();
+	duration_t charDahMarkTime();
+	duration_t farnsworthDelayTime();
+	duration_t interCharSpaceTime();
+	duration_t interWordSpaceTime();
 
 	//------------------------------------------------------------
 	// Morse parameter setters
 	//------------------------------------------------------------
 
-	void setWpmSchemeFactor(BHMorse_WpmFactor newValue);
-	void setOverallSpeed(BHMorse_Wpm newValue);
-	void setUserCharSpeed(BHMorse_Wpm newValue);
-	void setHighestEnabledGroup(BHMorse_charElemMap_Group newValue);
+	void setWpmSchemeFactor(wpmFactor_t newValue);
+	void setOverallSpeed(wpm_t newValue);
+	void setUserCharSpeed(wpm_t newValue);
+	void setEnabledDifficulty(difficulty_t newValue);
 
 	//------------------------------------------------------------
 	// sound parameter getters
 	//------------------------------------------------------------
 
-	BH_PIN tonePin();
-	BHMorse_Hz pitch();
+	BH_pin_t tonePin();
+	hz_t pitch();
 
 	//------------------------------------------------------------
 	// sound parameter setters
 	//------------------------------------------------------------
 
-	void setTonePin(BH_PIN newValue);
-	void setPitch(BHMorse_Hz newValue, bool pSave);
+	void setTonePin(BH_pin_t newValue);
+	void setPitch(hz_t newValue, bool pSave);
 
 	//------------------------------------------------------------
 	// message parameter getters
@@ -446,7 +449,7 @@ public:
 	// misc. methods
 	//------------------------------------------------------------
 
-	void begin(BH_PIN tonePin);
+	void begin(BH_pin_t tonePin);
 	void resetSettings();
 
 	boolean elemsRemainInChar();

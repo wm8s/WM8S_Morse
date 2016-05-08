@@ -36,7 +36,7 @@
 
 // names
 
-const BHMorse_FirstName BHMorse::_firstNames[] PROGMEM =
+const BHMorse::firstName_t BHMorse::_firstNames[] PROGMEM =
 {
 	{ "AALIYAH" },
 	{ "AARAV" },
@@ -990,7 +990,7 @@ const BHMorse_FirstName BHMorse::_firstNames[] PROGMEM =
 
 // cities
 
-const BHMorse_City BHMorse::_cities[] PROGMEM =
+const BHMorse::city_t BHMorse::_cities[] PROGMEM =
 {
 	{ "ABILENE TX" },
 	{ "AHMEDABAD" },
@@ -1373,7 +1373,7 @@ const BHMorse_City BHMorse::_cities[] PROGMEM =
 
 // QSO parts
 
-const BHMorse_QSOPart BHMorse::_QSOParts[] PROGMEM =
+const BHMorse::qsoPart_t BHMorse::_QSOParts[] PROGMEM =
 {
 	{" TNX FER CALL"},		// FB1
 	{" FB"},							// FB2
@@ -1410,9 +1410,9 @@ char _tmpBuffer[BHMORSE_MESSAGE_BUFRSIZE];
 // Character map
 //////////////////////////////////////////////////////////////////////////////
 
-const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
+const BHMorse::charElement_t BHMorse::_charElemMap[] PROGMEM =
 {
-	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE,  7, 0x00000000}, // inter-character space
+	{BHMORSE_CHAR_ELEMENT_MAP_DIFFICULTY_SPACE,  7, 0x00000000}, // inter-character space
 	{7, 19, 0xEBAEE000}, // !
 	{6, 15, 0xBABA0000}, // "
 	{5, 15, 0xABAE0000}, // # {SK}
@@ -1440,9 +1440,9 @@ const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 	{4, 17, 0xEEEE8000}, // 9
 	{7, 17, 0xEEEA8000}, // :
 	{7, 17, 0xEBAE8000}, // ;
-	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // < UNUSED
+	BHMORSE_CHAR_ELEMENT_MAP_UNUSED, // < UNUSED
 	{5, 13, 0xEAB80000}, // =
-	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // > UNUSED
+	BHMORSE_CHAR_ELEMENT_MAP_UNUSED, // > UNUSED
 	{5, 15, 0xAEEA0000}, // ?
 	{6, 17, 0xBBAE8000}, // @
 	{1,  5, 0xB8000000}, // A
@@ -1471,9 +1471,9 @@ const BHMorse::charElement BHMorse::_charElemMap[] PROGMEM =
 	{3, 11, 0xEAE00000}, // X
 	{3, 13, 0xEBB80000}, // Y
 	{3, 11, 0xEEA00000}, // Z
-	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // [ UNUSED
+	BHMORSE_CHAR_ELEMENT_MAP_UNUSED, // [ UNUSED
 	{6, 23, 0xABBBAA00}, // "\" {SOS}
-	{BHMORSE_CHAR_ELEMENT_MAP_GROUP_UNUSED,  0, 0x00000000}, // ] UNUSED
+	BHMORSE_CHAR_ELEMENT_MAP_UNUSED, // ] UNUSED
 	{3, 15, 0xAAAA0000}, // ^ {HH} error
 	{7, 17, 0xAEEB8000}, // _
 	{5, 11, 0xBAA00000}  // ` {AS} wait
@@ -1485,7 +1485,7 @@ void BHMorse::getRandomName(char* retV)
 
 	int r = random(0, BH_ARRAY_SIZE(_firstNames));
 
-	BHMorse_FirstName buffer;
+	firstName_t buffer;
 	memcpy_P(&buffer, &_firstNames[r], sizeof(buffer));
 	strcpy(retV, buffer.d);
 }
@@ -1496,7 +1496,7 @@ void BHMorse::getRandomCity(char* retV)
 
 	int r = random(0, BH_ARRAY_SIZE(_cities));
 
-	BHMorse_City buffer;
+	city_t buffer;
 	memcpy_P(&buffer, &_cities[r], sizeof(buffer));
 	strcpy(retV, buffer.d);
 }
@@ -1562,12 +1562,12 @@ void BHMorse::getRandomRST(char* retV)
 	retV[3] = BH_END_OF_STRING;
 }
 
-BHMorse::charElement BHMorse::getCharElement(int p)
+BHMorse::charElement_t BHMorse::getCharElement(int p)
 {
 	// read a character definition from PROGMEM
 
-	charElement retV;
-	memcpy_P(&retV, &_charElemMap[p], sizeof(charElement));
+	charElement_t retV;
+	memcpy_P(&retV, &_charElemMap[p], sizeof(charElement_t));
 	return retV;
 }
 
@@ -1575,34 +1575,34 @@ void BHMorse::getQSOPart(char* retV, int p)
 {
 	// read a QSO part from PROGMEM
 
-	BHMorse_QSOPart b;
-	memcpy_P(&b, &_QSOParts[p], sizeof(BHMorse_QSOPart));
+	qsoPart_t b;
+	memcpy_P(&b, &_QSOParts[p], sizeof(qsoPart_t));
 	strcpy(retV, b.d);
 }
 
-void BHMorse::redoCharGroupPtrs()
+void BHMorse::redoCharDifficultyPtrs()
 {
 	// populate the table with pointers to all of the characters
-	// in the current range of enabled groups
+	// in the current range of enabled difficulty
 
-	_numCharGroupPtrs = 0;
+	_numCharDifficultyPtrs = 0;
 
 	for (int i = 0; i < BH_ARRAY_SIZE(_charElemMap); i++)
 	{
-		charElement c = getCharElement(i);
-		if (c.charGroup <= highestEnabledGroup())
+		charElement_t c = getCharElement(i);
+		if (c.difficulty <= enabledDifficulty())
 		{
-			_ptrsToCharsInGroupRange[_numCharGroupPtrs] = i;
-			_numCharGroupPtrs++;
+			_ptrsToCharsWithEnabledDifficulty[_numCharDifficultyPtrs] = i;
+			_numCharDifficultyPtrs++;
 		}
 	}
 }
 
-boolean BHMorse::isSpace(charElement pChar)
+boolean BHMorse::isSpace(charElement_t pChar)
 {
 	// returns true if the passed character is a space
 
-	return (pChar.charGroup == BHMORSE_CHAR_ELEMENT_MAP_GROUP_SPACE);
+	return (pChar.difficulty == BHMORSE_CHAR_ELEMENT_MAP_DIFFICULTY_SPACE);
 }
 
 void BHMorse::loadChar()
@@ -1629,25 +1629,25 @@ void BHMorse::loadChar()
 
 void BHMorse::loadNextChar()
 {
-	// load next random character to send in enabled difficulty groups
+	// load next random character to send no harder than enabled difficulty
 
-	int rndChar = random(0, _numCharGroupPtrs);
-	_tmpBuffer[0] = _ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
+	int rndChar = random(0, _numCharDifficultyPtrs);
+	_tmpBuffer[0] = _ptrsToCharsWithEnabledDifficulty[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET;
 	_tmpBuffer[1] = BH_END_OF_STRING;
 	setMessage(_tmpBuffer);
 }
 
 void BHMorse::loadNextGroup()
 {
-	// load next group of random characters in enabled difficulty groups
+	// load next group of random characters no harder than enabled difficulty
 
 	byte rndNumChars = random(BHMORSE_RANDOMGROUP_MIN, BHMORSE_RANDOMGROUP_MAX + 1);
 	byte rndChar;
 
 	for (int i = 0; i < rndNumChars; i++)
 	{
-		rndChar = random(0, _numCharGroupPtrs);
-		_tmpBuffer[i] = char(_ptrsToCharsInGroupRange[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET);
+		rndChar = random(0, _numCharDifficultyPtrs);
+		_tmpBuffer[i] = char(_ptrsToCharsWithEnabledDifficulty[rndChar] + BHMORSE_CHAR_ELEMENT_MAP_OFFSET);
 	}
 	_tmpBuffer[rndNumChars] = BH_END_OF_STRING;
 
@@ -1675,20 +1675,20 @@ void BHMorse::loadNextQSO()
 
 	strcpy(_tmpBuffer, callA);
 
-	getQSOPart(bufr, BHMorse_QSOPart_Row::DE);
+	getQSOPart(bufr, QSOPart_Row::DE);
 	strcat(_tmpBuffer, bufr);
 
 	strcat(_tmpBuffer, callB);
 
 	// FB
 
-	p = random(BHMorse_QSOPart_Row::FB1, BHMorse_QSOPart_Row::FB5 + 1);
+	p = random(QSOPart_Row::FB1, QSOPart_Row::FB5 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
 	// RST
 
-	p = random(BHMorse_QSOPart_Row::RST1, BHMorse_QSOPart_Row::RST2 + 1);
+	p = random(QSOPart_Row::RST1, QSOPart_Row::RST2 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -1697,7 +1697,7 @@ void BHMorse::loadNextQSO()
 
 	// Name
 
-	p = random(BHMorse_QSOPart_Row::Name1, BHMorse_QSOPart_Row::Name4 + 1);
+	p = random(QSOPart_Row::Name1, QSOPart_Row::Name4 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -1706,7 +1706,7 @@ void BHMorse::loadNextQSO()
 
 	// QTH
 
-	p = random(BHMorse_QSOPart_Row::QTH1, BHMorse_QSOPart_Row::QTH2 + 1);
+	p = random(QSOPart_Row::QTH1, QSOPart_Row::QTH2 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -1715,7 +1715,7 @@ void BHMorse::loadNextQSO()
 
 	// Back to you
 
-	p = random(BHMorse_QSOPart_Row::Bk2U1, BHMorse_QSOPart_Row::Bk2U3 + 1);
+	p = random(QSOPart_Row::Bk2U1, QSOPart_Row::Bk2U3 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -1723,14 +1723,14 @@ void BHMorse::loadNextQSO()
 
 	strcat(_tmpBuffer, callA);
 
-	getQSOPart(bufr, BHMorse_QSOPart_Row::DE);
+	getQSOPart(bufr, QSOPart_Row::DE);
 	strcat(_tmpBuffer, bufr);
 
 	strcat(_tmpBuffer, callB);
 
 	// K
 
-	p = random(BHMorse_QSOPart_Row::K1, BHMorse_QSOPart_Row::K2 + 1);
+	p = random(QSOPart_Row::K1, QSOPart_Row::K2 + 1);
 	getQSOPart(bufr, p);
 	strcat(_tmpBuffer, bufr);
 
@@ -1748,7 +1748,7 @@ BHMorse::BHMorse()
 	// constructor
 	// put stuff you don't want to do until main.setup() in begin()
 
-	_ptrsToCharsInGroupRange = new byte[BH_ARRAY_SIZE(_charElemMap)];
+	_ptrsToCharsWithEnabledDifficulty = new byte[BH_ARRAY_SIZE(_charElemMap)];
 
 	// stop running
 
@@ -1756,40 +1756,40 @@ BHMorse::BHMorse()
 
 	// reset some things
 
-	_numCharGroupPtrs = 0;	// just in case
+	_numCharDifficultyPtrs = 0;	// just in case
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Morse parameter getters for backed properties
 //////////////////////////////////////////////////////////////////////////////
 
-BHMorse_WpmFactor BHMorse::wpmSchemeFactor()
+BHMorse::wpmFactor_t BHMorse::wpmSchemeFactor()
 {
 	return _wpmSchemeFactor;
 }
 
-BHMorse_Wpm BHMorse::overallSpeed()
+BHMorse::wpm_t BHMorse::overallSpeed()
 {
 	// this is "s" in the ARRL calculations
 
 	return _overallSpeed;
 }
 
-BHMorse_Wpm BHMorse::userCharSpeed()
+BHMorse::wpm_t BHMorse::userCharSpeed()
 {
 	return _userCharSpeed;
 }
 
-BHMorse_charElemMap_Group BHMorse::highestEnabledGroup()
+BHMorse::difficulty_t BHMorse::enabledDifficulty()
 {
-	return _highestEnabledGroup;
+	return _enabledDifficulty;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Morse parameter getters for computed properties
 //////////////////////////////////////////////////////////////////////////////
 
-BHMorse_Wpm BHMorse::charSpeed()
+BHMorse::wpm_t BHMorse::charSpeed()
 {
 	// the actual character (dit mark) speed that we'll use;
 	// this is "c" in the ARRL calculations
@@ -1808,12 +1808,12 @@ BHMorse_Wpm BHMorse::charSpeed()
 	return retV;
 }
 
-BHMorse_Duration BHMorse::charDitMarkTime()
+BHMorse::duration_t BHMorse::charDitMarkTime()
 {
 	// the character speed dit mark time
 	// this is "u" in ARRL calculations
 
-	BHMorse_Duration retV = 0;
+	duration_t retV = 0;
 
 	if (charSpeed() != 0)
 	{
@@ -1823,7 +1823,7 @@ BHMorse_Duration BHMorse::charDitMarkTime()
 	return retV;
 }
 
-BHMorse_Duration BHMorse::charDitSpaceTime()
+BHMorse::duration_t BHMorse::charDitSpaceTime()
 {
 	// the character dit space time;
 	// we're at a fixed Weight of 0.50
@@ -1831,7 +1831,7 @@ BHMorse_Duration BHMorse::charDitSpaceTime()
 	return charDitMarkTime();
 }
 
-BHMorse_Duration BHMorse::charDahMarkTime()
+BHMorse::duration_t BHMorse::charDahMarkTime()
 {
 	// the character dah mark time;
 	// we're at a fixed Ratio of BHMORSE_DITS_PER_DAH
@@ -1839,19 +1839,19 @@ BHMorse_Duration BHMorse::charDahMarkTime()
 	return (charDitMarkTime() * BHMORSE_DITS_PER_DAH);
 }
 
-BHMorse_Duration BHMorse::farnsworthDelayTime()
+BHMorse::duration_t BHMorse::farnsworthDelayTime()
 {
 	// the Farnsworth delay factor;
 	// this is t(a) in ARRL calculations
 
 	double numerator = ((60.0 * charSpeed()) - (37.2 * overallSpeed())) * 1000;
 	double denominator = (charSpeed() * overallSpeed());
-	BHMorse_Duration retV = numerator / denominator;
+	duration_t retV = numerator / denominator;
 
 	return retV;
 }
 
-BHMorse_Duration BHMorse::interCharSpaceTime()
+BHMorse::duration_t BHMorse::interCharSpaceTime()
 {
 	// the time between characters;
 	// this is t(c) in ARRL calculations
@@ -1859,7 +1859,7 @@ BHMorse_Duration BHMorse::interCharSpaceTime()
 	return ((BHMORSE_DITS_PER_DAH * farnsworthDelayTime()) / 19);
 }
 
-BHMorse_Duration BHMorse::interWordSpaceTime()
+BHMorse::duration_t BHMorse::interWordSpaceTime()
 {
 	// the time between words:
 	// this is t(w) in ARRL calculations
@@ -1871,7 +1871,7 @@ BHMorse_Duration BHMorse::interWordSpaceTime()
 // Morse parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
-void BHMorse::setWpmSchemeFactor(BHMorse_WpmFactor newValue)
+void BHMorse::setWpmSchemeFactor(BHMorse::wpmFactor_t newValue)
 {
 	if (true)
 	{
@@ -1879,7 +1879,7 @@ void BHMorse::setWpmSchemeFactor(BHMorse_WpmFactor newValue)
 	}
 }
 
-void BHMorse::setOverallSpeed(BHMorse_Wpm newValue)
+void BHMorse::setOverallSpeed(BHMorse::wpm_t newValue)
 {
 	if ((newValue >= BHMORSE_MIN_WPM) &&
 			(newValue <= BHMORSE_MAX_WPM))
@@ -1889,7 +1889,7 @@ void BHMorse::setOverallSpeed(BHMorse_Wpm newValue)
 	}
 }
 
-void BHMorse::setUserCharSpeed(BHMorse_Wpm newValue)
+void BHMorse::setUserCharSpeed(BHMorse::wpm_t newValue)
 {
 	if ((newValue >= BHMORSE_MIN_WPM) &&
 			(newValue <= BHMORSE_MAX_WPM))
@@ -1899,14 +1899,14 @@ void BHMorse::setUserCharSpeed(BHMorse_Wpm newValue)
 	}
 }
 
-void BHMorse::setHighestEnabledGroup(BHMorse_charElemMap_Group newValue)
+void BHMorse::setEnabledDifficulty(BHMorse::difficulty_t newValue)
 {
-	if ((newValue >= BHMORSE_MIN_CHARACTER_GROUP) &&
-			(newValue <= BHMORSE_MAX_CHARACTER_GROUP))
+	if ((newValue >= BHMORSE_MIN_CHARACTER_DIFFICULTY) &&
+			(newValue <= BHMORSE_MAX_CHARACTER_DIFFICULTY))
 	{
-		_highestEnabledGroup = newValue;
-		saveHighestEnabledGroup();
-		redoCharGroupPtrs();
+		_enabledDifficulty = newValue;
+		saveEnabledDifficulty();
+		redoCharDifficultyPtrs();
 	}
 }
 
@@ -1914,12 +1914,12 @@ void BHMorse::setHighestEnabledGroup(BHMorse_charElemMap_Group newValue)
 // sound parameter getters
 //////////////////////////////////////////////////////////////////////////////
 
-BH_PIN BHMorse::tonePin()
+BH_pin_t BHMorse::tonePin()
 {
 	return _tonePin;
 }
 
-BHMorse_Hz BHMorse::pitch()
+BHMorse::hz_t BHMorse::pitch()
 {
 	return _pitch;
 }
@@ -1928,14 +1928,14 @@ BHMorse_Hz BHMorse::pitch()
 // sound parameter setters
 //////////////////////////////////////////////////////////////////////////////
 
-void BHMorse::setTonePin(BH_PIN newValue)
+void BHMorse::setTonePin(BH_pin_t newValue)
 {
 	_tonePin = newValue;
 	pinMode(_tonePin, OUTPUT);
 	noTone(_tonePin);
 }
 
-void BHMorse::setPitch(BHMorse_Hz newValue, bool pSave)
+void BHMorse::setPitch(BHMorse::hz_t newValue, bool pSave)
 {
 	if ((newValue >= BHMORSE_MIN_PITCH) &&
 			(newValue <= BHMORSE_MAX_PITCH))
@@ -2025,11 +2025,11 @@ void BHMorse::setRunMode(BHMorse::RunMode newValue)
 // EEPROM settings stuff
 //////////////////////////////////////////////////////////////////////////////
 
-BHMorse_EEPROMSignature BHMorse::readSignature()
+BHMorse::eepromSignature_t BHMorse::readSignature()
 {
 	// read signature
 
-	BHMorse_EEPROMSignature es = 0;
+	BHMorse::eepromSignature_t es = 0;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_SIGNATURE, es);
 
 	return es;
@@ -2039,7 +2039,7 @@ void BHMorse::readOverallSpeed()
 {
 	// read signature
 
-	BHMorse_Wpm tmpWpm;
+	BHMorse::wpm_t tmpWpm;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_OVERALLSPEED, tmpWpm);
 	setOverallSpeed(tmpWpm);
 }
@@ -2048,25 +2048,25 @@ void BHMorse::readUserCharSpeed()
 {
 	// read user character speed
 
-	BHMorse_Wpm tmpWpm;
+	BHMorse::wpm_t tmpWpm;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_USERCHARSPEED, tmpWpm);
 	setUserCharSpeed(tmpWpm);
 }
 
-void BHMorse::readHighestEnabledGroup()
+void BHMorse::readEnabledDifficulty()
 {
-	// read highest enabled group
+	// read enabled difficulty
 
-	BHMorse_charElemMap_Group tmpGroup;
-	EEPROM.get(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP, tmpGroup);
-	setHighestEnabledGroup(tmpGroup);
+	BHMorse::difficulty_t tmpDifficulty;
+	EEPROM.get(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDDIFFICULTY, tmpDifficulty);
+	setEnabledDifficulty(tmpDifficulty);
 }
 
 void BHMorse::readPitch()
 {
 	// read pitch
 
-	BHMorse_Hz tmpHz;
+	BHMorse::hz_t tmpHz;
 	EEPROM.get(BHMORSE_EEPROM_ADDR_PITCH, tmpHz);
 	setPitch(tmpHz, true);
 }
@@ -2081,7 +2081,7 @@ void BHMorse::loadSettings()
 
 		readOverallSpeed();
 		readUserCharSpeed();
-		readHighestEnabledGroup();
+		readEnabledDifficulty();
 		readPitch();
 	}
 	else
@@ -2099,13 +2099,13 @@ void BHMorse::resetSettings()
 	saveSignature();
 	setOverallSpeed(BHMORSE_DEFAULT_OVERALLSPEED);
 	setUserCharSpeed(BHMORSE_DEFAULT_USERCHARSPEED);
-	setHighestEnabledGroup(BHMORSE_DEFAULT_HIGHESTENABLEDGROUP);
+	setEnabledDifficulty(BHMORSE_DEFAULT_ENABLEDDIFFICULTY);
 	setPitch(BHMORSE_DEFAULT_PITCH, true);
 }
 
 void BHMorse::saveSignature()
 {
-	BHMorse_EEPROMSignature es = BHMORSE_EEPROM_SIGNATURE_V1;
+	BHMorse::eepromSignature_t es = BHMORSE_EEPROM_SIGNATURE_V1;
 	EEPROM.put(BHMORSE_EEPROM_ADDR_SIGNATURE, es);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
@@ -2122,9 +2122,9 @@ void BHMorse::saveUserCharSpeed()
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
-void BHMorse::saveHighestEnabledGroup()
+void BHMorse::saveEnabledDifficulty()
 {
-	EEPROM.put(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDGROUP, _highestEnabledGroup);
+	EEPROM.put(BHMORSE_EEPROM_ADDR_HIGHESTENABLEDDIFFICULTY, _enabledDifficulty);
 	delay(BHMORSE_EEPROM_WRITE_DELAY);
 }
 
@@ -2138,7 +2138,7 @@ void BHMorse::savePitch()
 // other methods
 //////////////////////////////////////////////////////////////////////////////
 
-void BHMorse::begin(BH_PIN tonePin)
+void BHMorse::begin(BH_pin_t tonePin)
 {
 	// do stuff that you can't or don't want to do in the constructor
 
