@@ -8,11 +8,11 @@ The code is fairly easy to follow, so I won't include documentation, until the c
 
 Each turn of the loop() calls SendNextElem(), which sends one element (a dit-long character mark or space, or an inter-character space).
 
-See the 1CPO project on GitHub at https://github.com/wm8s/1CPO for a sketch that uses BHMorse to implement a full-featured CW trainer.
+See the 1CPO project on GitHub at https://github.com/wm8s/1CPO for a sketch that uses this library to implement a full-featured CW trainer.
 
 Also see the 1CPO project at https://hackaday.io/project/11212-1cpo for a hardware implementation that fits in an Altoids Smalls tin.
 
-For the timing in the BHMorse library, I used the ARRL's Morse code speed calculations published in April 1990's QST (A Standard for Morse Timing Using the Farnsworth Technique by Jon Bloom, KE3Z) to convert character speed in WPM (c in the ARRL's calculations) and overall speed in WPM (s in the ARRL's calculations) to determine the total Farnsworth delay (t(a)) that must be spread out over the inter-character space (t(c)) and inter-word space (t(w)), the dit mark / space time (i.e., one element time, or u in the ARRL calculations), and the dah mark time, all maintaining the standard 1:1:3:7 ratio:
+For the timing, I used the ARRL's Morse code speed calculations published in April 1990's QST (A Standard for Morse Timing Using the Farnsworth Technique by Jon Bloom, KE3Z) to convert character speed in WPM (c in the ARRL's calculations) and overall speed in WPM (s in the ARRL's calculations) to determine the total Farnsworth delay (t(a)) that must be spread out over the inter-character space (t(c)) and inter-word space (t(w)), the dit mark / space time (i.e., one element time, or u in the ARRL calculations), and the dah mark time, all maintaining the standard 1:1:3:7 ratio:
 
 http://www.arrl.org/files/file/Technology/x9004008.pdf
 
