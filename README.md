@@ -1,6 +1,6 @@
-# BHMorse
+# WM8S_Morse
 
-Morse Code generator and trainer.  BHMorse can generate random characters, random groups of characters, and random moderately-plausible QSOs.  You can change the character speed (in WPM), the overall speed (in WPM), the difficulty of characters that are sent in the random characters and random groups (1 for the shortest letters, to 7 for infrequently used punctuation symbols), and pitch (in Hz).  Settings are stored to EEPROM when made, and restored from on power-up.
+Morse Code generator and trainer.  WM8S_Morse can generate random characters, random groups of characters, and random moderately-plausible QSOs.  You can change the character speed (in WPM), the overall speed (in WPM), the difficulty of characters that are sent in the random characters and random groups (1 for the shortest letters, to 7 for infrequently used punctuation symbols), and pitch (in Hz).  Settings are stored to EEPROM when made, and restored from on power-up.
 
 This is an Arduino library;  install it like you would any other user-contributed library.
 
